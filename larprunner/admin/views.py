@@ -2,7 +2,11 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import render_to_response
 from django.contrib.auth.decorators import user_passes_test 
 from django.contrib.auth import authenticate, login
+from models import Game
+
 my_login_required = user_passes_test(lambda u: u.is_authenticated(), login_url='/admin/login/')
+
+
 
 def signup(request):
   username = request.POST['username']
@@ -12,7 +16,7 @@ def signup(request):
     if user is not None:
       if user.is_active:
         login(request, user)
-        next = request.GET['next']
+        next = request.GET.get('next', None)
         if next is None:
           next = "/admin/start/"
         return HttpResponseRedirect(next)
@@ -33,3 +37,9 @@ def admlogin(request):
 @my_login_required
 def hello(request):
   return render_to_response("admin/hello.html", {'username': "Admiral Kokotov"})
+
+@my_login_required
+def games(request):
+  games = Game.objects.all()
+  return render_to_response("admin/games.html", {'games': games})
+  
