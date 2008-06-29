@@ -5,7 +5,6 @@ from django.db import models
 
 class Game(models.Model):
   name          = models.CharField("Jméno", maxlength=30)
-  roles         = models.PositiveSmallIntegerField("Počet rolí")
   roles_male    = models.PositiveSmallIntegerField("Počet mužských rolí")
   roles_female  = models.PositiveSmallIntegerField("Počet ženských rolí")
   roles_both    = models.PositiveSmallIntegerField("Počet obecných rolí")  

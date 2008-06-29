@@ -1,9 +1,19 @@
 {% extends "admin/skeleton.html" %}
+
 {% block content %}
 <form action="." method="POST">
     <table>
     {{ form.as_table }}
     </table>
-	<p><input type="submit" value="Odeslat"></p>
+	<p><input type="submit" value="Odeslat">
 </form>
+{% ifnotequal gameid None %}
+<form action="/admin/games/delete/{{ gameid }}/">
+<input type="submit" value="Smazat">
+</form>
+{% endifnotequal %}
+<form action="/admin/games/">
+<input type="submit" value="Zpět">
+</form>
+</p> 
 {% endblock %}

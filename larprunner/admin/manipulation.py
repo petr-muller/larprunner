@@ -11,7 +11,7 @@ class menuitem:
     self.screen = screen
     self.active = active
 
-def createMenuItems(active):
+def createMenuItems(active=None):
   ret = []
   ret.append(menuitem("games", "Hry", 0))
   ret.append(menuitem("events", "Akce", 0))

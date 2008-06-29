@@ -1,9 +1,10 @@
+# This Python file uses the following encoding: utf-8
 from django.http import HttpResponseRedirect
 from django.shortcuts import render_to_response
 from django.contrib.auth import authenticate, login
 from manipulation import my_login_required, createMenuItems
 from models import Game
-from forms import NewGameForm
+from django.newforms import form_for_instance, form_for_model
 
 def signup(request):
   username = request.POST.get('username', None)
@@ -41,12 +42,24 @@ def games(request):
   games = Game.objects.all()
   return render_to_response("admin/games.html", {'games': games, 'menuitems' : createMenuItems("games")})
 
-def game_new(request):
+@my_login_required
+def game_modify(request, gameid=None):
+  if gameid is None:
+    GameForm = form_for_model(Game)
+  else:
+    inst = Game.objects.get(id=gameid)
+    GameForm = form_for_instance(inst)
   if request.method == 'POST':
-    form = NewGameForm(request.POST)
+    form = GameForm(request.POST)
     if form.is_valid():
       form.save()
       return HttpResponseRedirect('/admin/games/')
   else:
-    form = NewGameForm()
-  return render_to_response('admin/gameform.html', {'form': form })
+    form = GameForm()
+  return render_to_response('admin/gameform.html', {'form': form, 'gameid': gameid, 'menuitems' : createMenuItems()})
+     
+def game_delete(request, gameid=None):
+  if gameid is not None:
+    Game.objects.get(id=gameid).delete()    
+  return HttpResponseRedirect('/admin/games/')
+    
