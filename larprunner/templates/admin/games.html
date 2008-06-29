@@ -1,15 +1,10 @@
-<html>
-  <head>
-    <title>LarpRunner | Administrace | Hry</title>
-  </head>
-  <body>
+    {% extends "admin/skeleton.html" %}
+    {% block content %}
     <h1>Vyber hru na zmenu</h1>
     {% for game in games %}
     <p><a href="/admin/games/{{game.id}}">{{ game }}</a>
     {% endfor %}
     <p><a href="/admin/games/new">Nová hra</a>
-  </body>
-</html>
-
+    {% endblock %}
 
 

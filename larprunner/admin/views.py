@@ -1,28 +1,26 @@
 from django.http import HttpResponseRedirect
 from django.shortcuts import render_to_response
-from django.contrib.auth.decorators import user_passes_test 
 from django.contrib.auth import authenticate, login
+from manipulation import my_login_required, createMenuItems
 from models import Game
-
-my_login_required = user_passes_test(lambda u: u.is_authenticated(), login_url='/admin/login/')
-
-
+from forms import NewGameForm
 
 def signup(request):
-  username = request.POST['username']
-  password = request.POST['password']
+  username = request.POST.get('username', None)
+  password = request.POST.get('password', None)
   if None not in (username, password):
     user = authenticate(username=username, password=password)
-    if user is not None:
-      if user.is_active:
-        login(request, user)
-        next = request.GET.get('next', None)
-        if next is None:
-          next = "/admin/start/"
-        return HttpResponseRedirect(next)
-      else:
-        return HttpResponseRedirect('/admin/login/')
+    if user is not None and user.is_active:      
+      login(request, user)
+      next = request.GET.get('next', None)
+      if next is None:
+        next = "/admin/start/"
+      return HttpResponseRedirect(next)
+    else:
+      #FIXME:generate some sane message
+      return HttpResponseRedirect('/admin/login/')    
   else:
+    #FIXME: generate some sane messages
     return HttpResponseRedirect('/admin/login/')
 
 def admlogin(request):
@@ -41,5 +39,14 @@ def hello(request):
 @my_login_required
 def games(request):
   games = Game.objects.all()
-  return render_to_response("admin/games.html", {'games': games})
-  
+  return render_to_response("admin/games.html", {'games': games, 'menuitems' : createMenuItems("games")})
+
+def game_new(request):
+  if request.method == 'POST':
+    form = NewGameForm(request.POST)
+    if form.is_valid():
+      form.save()
+      return HttpResponseRedirect('/admin/games/')
+  else:
+    form = NewGameForm()
+  return render_to_response('admin/gameform.html', {'form': form })
