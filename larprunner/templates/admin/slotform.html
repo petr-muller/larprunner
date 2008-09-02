@@ -1,0 +1,50 @@
+{% extends "commonui.html" %}
+{% block content %}
+<fieldset><legend>Vlastnosti slotu</legend>
+<form action="." method="post">
+    <table>
+    	{{ form.as_table }}
+    </table>    
+	<p><input type="submit" value="Odeslat"></p> 
+</form>
+</fieldset>
+
+{% if gamespresent %}
+<fieldset><legend>Hry</legend>
+<table>
+{% for game in gamespresent %}
+<tr>
+<tr>
+	<td>
+		<a href="/admin/events/multi/event{{eventid}}/slots/delete/{{game.slot_id}}/">Smazat</a>
+	</td>
+	<td>
+		{{ game.game }}
+	</td>
+	<td>
+		{{ game.price }}
+	</td>
+	<td>
+		{{ game.note }}
+	</td>
+</tr>
+{% endfor %}
+</table>
+</fieldset>
+{% endif %}
+
+{% ifnotequal slotform None %}
+<fieldset><legend>Přidání nové hry</legend>
+<form action="/admin/events/multi/{{ eventid }}/slots/{{ slotid }}/add/" method="POST">
+	<table>
+	{{ slotform.as_table }}
+	</table>
+	<p><input type="submit" value="Pridat">
+	</p>
+</form>
+</fieldset>
+{% endifnotequal %}
+<form action="/admin/events/multi/{{ eventid }}/">
+	<input type="submit" value="Zpět">
+</form>
+{% endblock %}

@@ -1,0 +1,10 @@
+Dobrý den,
+
+pro dokončení registrace na přihlašovacím nástroji Court of Moravia navštivte prosím následující link:
+http://{{ site }}/users/activate/{{ activation_key }}/
+
+Učiňte tak prosím do {{ expiration_time }}, jinak bude vaše registrace zrušena a vy budete muset údaje vyplňovat znovu.
+
+S pozdravem,
+
+Court Of Moravia

@@ -1,0 +1,26 @@
+{% extends "commonui.html" %}
+{% block content %}
+	<form action="." method="post">
+		<fieldset><legend>Vlastnosti eventu s více hrami</legend> 
+    		<table>
+    			{{ form.as_table }}
+    		</table>
+		</fieldset>
+	{% ifequal allow_slots 1 %}
+<fieldset><legend>Sloty</legend>
+    <table>
+    {% for slot in slots %}
+    <tr><td><a href="/admin/events/multi/{{ eventid }}/slots/{{ slot.id }}/">{{ slot }}</a></td></tr>
+    {% endfor %}
+    
+    <tr><td><a href="/admin/events/multi/{{ eventid }}/slots/new">Nový slot</a></td></tr>
+    
+    </table>
+</fieldset>
+{% endifequal %}
+	<p><input type="submit" value="Odeslat" /></p>
+</form>
+<form action="/admin/events/">
+<input type="submit" value="Zpět" />
+</form>
+{% endblock %}

@@ -78,8 +78,16 @@ INSTALLED_APPS = (
     'django.contrib.contenttypes',
     'django.contrib.sessions',
 #    'django.contrib.admin',
-#    'django.contrib.sites',
+    'django.contrib.sites',
     'larprunner.admin',
+    'larprunner.events',
+    'larprunner.users'
 )
 
 SESSION_EXPIRE_AT_BROWSER_CLOSE=True
+AUTH_PROFILE_MODULE="users.Person"
+ACCOUNT_ACTIVATION_DAYS=7
+EMAIL_HOST="mesias.brnonet.cz"
+EMAIL_HOST_USER="afri"
+EMAIL_HOST_PASSWORD="MEror7popax"
+DEFAULT_FROM_EMAIL='afri@afri.cz'

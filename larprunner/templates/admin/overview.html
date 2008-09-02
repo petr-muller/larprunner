@@ -1,0 +1,13 @@
+{% extends "commonui.html" %}
+    {% block content %}
+    <table>    
+    {% for log in logs %}
+    	<tr>
+    		<td id="date">{{log.date}}</td>
+    		<td>{{log.user}}</td>
+    		<td id="msg">{{log.message}}</td>
+    	</tr>
+    {% endfor %}
+    </table>
+    
+{% endblock %}
