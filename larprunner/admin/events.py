@@ -108,7 +108,7 @@ def slot_modify(request, eventid, slotid=None):
                                'title'        : "Editace slotu",
                                'uset'         : request.user},
                               )
-
+@my_admin_required
 def add_game_to_slot(request, eventid="", slotid=""):
   if request.method == "POST":
     form = SlotForm(slotid, request.POST)
