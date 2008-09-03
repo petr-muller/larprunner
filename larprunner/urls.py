@@ -9,8 +9,10 @@ urlpatterns = patterns('larprunner',
   (r'^users/activate/(?P<activation_key>[a-f0-9]{40})/{0,1}$', 'users.views.activate'),
   
   
-  (r'^/{0,1}$',             'events.views.mainpage'),
-  (r'^admin/{0,1}$',       'admin.events.overview'),
+  (r'^/{0,1}$',               'events.views.mainpage'),
+  (r'^admin/{0,1}$',          'admin.events.overview'),
+  (r'^admin/logout/{0,1}$',   'users.views.logout' ),
+  (r'^admin/userland/{0,1}$', 'events.views.mainpage'),
   
   (r'^admin/games/{0,1}$', 'admin.games.administrate_games'),
   (r'^admin/games/(?P<gameid>new|\d{1,3})/{0,1}$', 'admin.games.game_modify'),
