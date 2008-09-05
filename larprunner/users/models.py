@@ -93,7 +93,6 @@ class RegistrationManager(models.Manager):
         new_user.save()
         
         registration_profile = self.create_profile(new_user)
-        print year
         new_player = Player.objects.create(user=new_user, name=name, surname=surname,
                                            year_of_birth=year, phone=phone,
                                            gender=gender)

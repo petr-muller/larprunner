@@ -15,6 +15,7 @@ class menuitem:
 
 def createMenuItems(active=None):
   ret = []
+  ret.append(menuitem("questions",u"Otázky", 0))
   ret.append(menuitem("games",    u"Hry", 0))
   ret.append(menuitem("events",   u"Akce", 0))
   ret.append(menuitem("",         u"Overview", 0))

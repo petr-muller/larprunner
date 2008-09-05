@@ -1,0 +1,16 @@
+	{% extends "commonui.html" %}
+    {% block content %}
+    
+	<fieldset><legend>Otázky</legend>	
+    <table>    
+    {% for que in questions %}
+    <tr>
+    	<td><a href="/admin/questions/{{que.id}}">{{ que.uniq_name }}</a></td>
+    	<td>{{ que.comment }}</td>
+    </tr>
+    {% endfor %}
+    </table>
+    </fieldset>    
+               
+    {% endblock %}
+    

@@ -81,7 +81,8 @@ INSTALLED_APPS = (
     'django.contrib.sites',
     'larprunner.admin',
     'larprunner.events',
-    'larprunner.users'
+    'larprunner.users',
+    'larprunner.questions'
 )
 
 SESSION_EXPIRE_AT_BROWSER_CLOSE=True

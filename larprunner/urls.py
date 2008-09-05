@@ -23,6 +23,8 @@ urlpatterns = patterns('larprunner',
   
   (r'^admin/events/multi/(?P<eventid>\d{1,3})/slots/(?P<slotid>(new)|(\d{1,3}))/{0,1}$', 'admin.events.slot_modify'),
   (r'^admin/events/multi/(?P<eventid>\d{1,3})/slots/(?P<slotid>\d{1,3})/add/{0,1}$', 'admin.events.add_game_to_slot'),
+  
+  (r'^admin/questions/{0,1}$', 'admin.questions.questions'),
 )
 
 urlpatterns += patterns('',
