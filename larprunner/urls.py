@@ -25,6 +25,7 @@ urlpatterns = patterns('larprunner',
   (r'^admin/events/multi/(?P<eventid>\d{1,3})/slots/(?P<slotid>\d{1,3})/add/{0,1}$', 'admin.events.add_game_to_slot'),
   
   (r'^admin/questions/{0,1}$', 'admin.questions.questions'),
+  (r'^admin/questions/(?P<queid>(new)|(\d{1,3}))/{0,1}$', 'admin.questions.question_edit'),
 )
 
 urlpatterns += patterns('',

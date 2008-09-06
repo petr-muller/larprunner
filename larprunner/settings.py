@@ -12,7 +12,7 @@ MANAGERS = ADMINS
 DATABASE_ENGINE = 'mysql'           # 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'ado_mssql'.
 DATABASE_NAME = 'larprunner'             # Or path to database file if using sqlite3.
 DATABASE_USER = 'afri'             # Not used with sqlite3.
-DATABASE_PASSWORD = 'fo0m4nchU'         # Not used with sqlite3.
+DATABASE_PASSWORD = 'fo0m4nchU'        # Not used with sqlite3.
 DATABASE_HOST = ''             # Set to empty string for localhost. Not used with sqlite3.
 DATABASE_PORT = ''             # Set to empty string for default. Not used with sqlite3.
 
@@ -67,7 +67,7 @@ MIDDLEWARE_CLASSES = (
 ROOT_URLCONF = 'larprunner.urls'
 
 TEMPLATE_DIRS = (
-    '/home/afri/Projects/larp-labs/larp-runner/larprunner/templates',
+    '/home/afri/projects/larp-runner/larprunner/templates',
     # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
     # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.
