@@ -53,14 +53,15 @@ class RegistrationForm(forms.Form):
     surname = forms.CharField(max_length=30,
                            widget=forms.TextInput(attrs=attrs_dict),
                            label=_(u'Příjmení'))
+    nick  = forms.CharField(max_length=30,
+                            required=False)
     year_of_birth = forms.IntegerField(label=_(u'Rok narození'))
     phone = forms.CharField(max_length=13, min_length=13,
                             widget=forms.TextInput(attrs=attrs_dict),
                             label=_(u'Telefon (ve tvaru +420 111 222 333)'))
     gender = forms.ChoiceField(choices=GENDER_CHOICES,
                                 label=_(u'Pohlaví'))
-      
-    
+
     def clean_username(self):
         """
         Validate that the username is alphanumeric and is not already
@@ -125,5 +126,6 @@ class RegistrationForm(forms.Form):
                                                                     surname = self.clean_data['surname'],
                                                                     year = self.clean_data['year_of_birth'],
                                                                     phone = self.clean_data['phone'],
-                                                                    gender = self.clean_data['gender'])
+                                                                    gender = self.clean_data['gender'],
+                                                                    nick = self.clean_data['nick'])
         return new_user

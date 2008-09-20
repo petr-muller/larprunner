@@ -66,7 +66,7 @@ class RegistrationManager(models.Manager):
         return False
     
     def create_inactive_user(self, username, password, email,
-                             name, surname, year, phone, gender,
+                             name, surname, year, phone, gender,nick,
                              send_email=True):
         """
         Create a new, inactive ``User``, generates a
@@ -95,7 +95,7 @@ class RegistrationManager(models.Manager):
         registration_profile = self.create_profile(new_user)
         new_player = Player.objects.create(user=new_user, name=name, surname=surname,
                                            year_of_birth=year, phone=phone,
-                                           gender=gender)
+                                           gender=gender, nick=nick)
         new_player.save()
                        
         if send_email:
@@ -248,4 +248,5 @@ class Player(models.Model):
     surname = models.CharField(maxlength=30)
     year_of_birth = models.IntegerField()
     phone = models.CharField(maxlength=13)
-    gender = models.CharField(choices=GENDER_CHOICES, maxlength=4)    
+    gender = models.CharField(choices=GENDER_CHOICES, maxlength=4)
+    nick = models.CharField(maxlength=30)
