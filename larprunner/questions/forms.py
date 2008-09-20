@@ -1,8 +1,6 @@
 # This Python file uses the following encoding: utf-8
 from django import newforms as forms
-from questions.models import QTYPES, Question, ChoicesForQuestion
-
-
+from larprunner.questions.models import QTYPES, Question, ChoicesForQuestion
 
 class CreateQuestionForm(forms.Form):
   
