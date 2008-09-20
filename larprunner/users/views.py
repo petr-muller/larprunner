@@ -11,8 +11,8 @@ from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect
 from django.shortcuts import render_to_response
 from django.template import RequestContext
-from users.forms import RegistrationForm
-from users.models import RegistrationProfile
+from larprunner.users.forms import RegistrationForm
+from larprunner.users.models import RegistrationProfile
 
 
 def login(request,
