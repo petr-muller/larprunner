@@ -57,7 +57,7 @@ class Question(models.Model):
       choices_prepared.append((choice.id, choice.choice))
 
     if self.type == "TEXTFIELD":
-      field = forms.CharField(maxlen=self.maxlen,label=self.comment)
+      field = forms.CharField(max_length=self.maxlen,label=self.comment)
     elif self.type == "TEXTAREA":
       field = forms.CharField(widget=forms.Textarea, label=self.comment, )
     elif self.type == "CHECKBOX":
