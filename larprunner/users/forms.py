@@ -4,7 +4,7 @@ from django.core.validators import alnum_re
 from django.contrib.auth.models import User
 import re
 
-from users.models import RegistrationProfile
+from larprunner.users.models import RegistrationProfile
 
 # I put this on all required fields, because it's easier to pick up
 # on them with CSS or JavaScript if they have a class of "required"
