@@ -1,9 +1,12 @@
 from django.conf.urls.defaults import *
+from django.contrib.auth.views import password_reset
 
 urlpatterns = patterns('larprunner',  
   
   (r'^login/{0,1}$',        'users.views.login'),
   (r'^logout/{0,1}$',       'users.views.logout'),
+  (r'^passreset/done/{0,1}$',    'events.views.mainpage'),
+  
   (r'^badlogin/{0,1}$',     'users.views.login', {'bad' : True}),
   (r'^registration/{0,1}$', 'users.views.register'),
   (r'^users/activate/(?P<activation_key>[a-f0-9]{40})/{0,1}$', 'users.views.activate'),
@@ -34,4 +37,5 @@ urlpatterns = patterns('larprunner',
 
 urlpatterns += patterns('',
                         (r'^styles/(?P<path>.*)$', 'django.views.static.serve', {'document_root': '/home/afri/Projects/larp-labs/larp-runner/larprunner/media'}),
+                        (r'^passreset/{0,1}$', 'django.contrib.auth.views.password_reset', {'template_name' : 'passreset.html', 'email_template_name' : 'password_reset_email.html'}),                        
   )
