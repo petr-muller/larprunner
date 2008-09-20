@@ -22,13 +22,10 @@ def question_edit(request, queid):
     if form.is_valid():
       form.save()
       return HttpResponseRedirect('/admin/questions')
-    print "fuckup"
   else:
     form = CreateQuestionForm()
     if queid != "new":
       form.loadValues(queid)
-      print "Passed here"
-  
     return render_to_response("admin/questionform.html",
                             { 'menuitems' : createMenuItems('questions'),
                               'user'      : request.user,

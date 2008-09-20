@@ -26,9 +26,10 @@ class QuestionManager(models.Manager):
     question.save()
 
     ChoicesForQuestion.objects.filter(question=question).delete()
-    for choice in choices:
-      new_choice = ChoicesForQuestion(choice=choice, question = question)
-      new_choice.save()
+    if choices.__class__ in [ [].__class__, ().__class__ ] and len(choices) > 1:
+      for choice in choices:
+        new_choice = ChoicesForQuestion(choice=choice, question = question)
+        new_choice.save()
 
     return question
 
