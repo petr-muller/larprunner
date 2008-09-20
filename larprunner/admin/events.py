@@ -7,7 +7,7 @@ from django.shortcuts import render_to_response
 from django.template import RequestContext
 from forms import SlotForm
 from larprunner.events.forms import RegistrationForm, SingleEventForm, MultiEventForm
-from larprunner.events.models import Event, MultiGameSlot, GameInSlot
+from larprunner.events.models import Event, MultiGameSlot, GameInSlot, Registration
 from manipulation import my_login_required, createMenuItems, my_admin_required
 from models import Game, Log
 from larprunner.questions.models import Question
@@ -53,7 +53,7 @@ def modify(request, eventid=None, type="single", regcreate=None):
       form.validate(request.POST)
     else:
       form = Form(request.POST)
-    print form
+
     form.save(eventid)
     return HttpResponseRedirect('/admin/events/%s/%s/' % (type, eventid))
   else:
@@ -70,7 +70,8 @@ def modify(request, eventid=None, type="single", regcreate=None):
       reg = RegistrationForm()
       fields = {}
       data = {}
-      our_questions = event.question.filter(event=event)      
+      our_questions = event.question.filter(event=event)
+
       for question in questions:
         fields["%s" % question.id] = BooleanField(label=question.uniq_name, required=False, widget=CheckboxInput)        
         if question in our_questions:          
@@ -78,8 +79,7 @@ def modify(request, eventid=None, type="single", regcreate=None):
       
       reg.setFields(fields)
       reg.setData(data)
-      print question
-  
+
   return render_to_response('admin/eventform.html', 
                             {'form'         : form,
                              'eventid'      : eventid,
@@ -146,4 +146,18 @@ def add_game_to_slot(request, eventid="", slotid=""):
     else:
       return HttpResponseRedirect('/admin/events/multi/%s/slots/%s/' % (eventid, slotid))
   else:
-    return HttpResponseRedirect('/admin/events/multi/%s/slots/%s/' % (eventid, slotid))    
+    return HttpResponseRedirect('/admin/events/multi/%s/slots/%s/' % (eventid, slotid))
+
+@my_admin_required
+def show_applied_people(request, eventid):
+  event = Event.objects.get(id=eventid)
+  regs = Registration.objects.filter(event=event).order_by("player")
+  people = [ reg.player for reg in regs ]
+  people.sort(lambda x,y: cmp(x.surname, y.surname))
+  
+  return render_to_response('admin/eventpeople.html',
+                              {'menuitems'    : createMenuItems(),
+                               'title'        : "Lidé přihlášení na %s" % event.name,
+                               'user'         : request.user,
+                               'people'       : people},
+                              )

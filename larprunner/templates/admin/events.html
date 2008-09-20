@@ -4,7 +4,10 @@
 	<fieldset><legend>Eventy s jednou hrou</legend>	
     <table>    
     {% for s_event in events_s %}
-    <tr><td><a href="/admin/events/single/{{s_event.id}}">{{ s_event }}</a></td></tr>
+    <tr>
+    	<td><a href="/admin/events/single/{{s_event.id}}">{{ s_event }}</a></td>
+    	<td><a href="/admin/events/single/{{s_event.id}}/people/">Přihlášky</a></td>
+   	</tr>
     {% endfor %}
     </table>
     </fieldset>

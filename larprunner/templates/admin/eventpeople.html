@@ -1,0 +1,16 @@
+{% extends "commonui.html" %}
+{% block content %}    
+    <table>    
+	{% for player in people %}
+	<tr>
+		<td>{{player.surname}}, {{player.name}} ({{player.nick}})</td>
+		<td>{{player.phone}}</td>
+		<td>{{player.user.email}}</td>
+		<td>{{player.gender}}</td>
+		<td>{{player.year_of_birth}}</td>
+	</tr>
+    {% endfor %}
+    </table>    
+{% endblock %}
+
+
