@@ -20,7 +20,8 @@ urlpatterns = patterns('larprunner',
   
   (r'^admin/events/{0,1}$', 'admin.events.events'),  
   (r'^admin/events/(?P<type>(single|multi))/(?P<eventid>(new)|(\d{1,3}))/{0,1}$', 'admin.events.modify'),
-  
+  (r'^admin/events/(?P<type>(single|multi))/(?P<eventid>\d{1,3})/regcreate/{0,1}$', 'admin.events.modify', {'regcreate' : True}),
+    
   (r'^admin/events/multi/(?P<eventid>\d{1,3})/slots/(?P<slotid>(new)|(\d{1,3}))/{0,1}$', 'admin.events.slot_modify'),
   (r'^admin/events/multi/(?P<eventid>\d{1,3})/slots/(?P<slotid>\d{1,3})/add/{0,1}$', 'admin.events.add_game_to_slot'),
   

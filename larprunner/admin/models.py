@@ -18,34 +18,5 @@ class Log(models.Model):
   def __str__(self):
     return self.message 
 
-class EventOneGame(models.Model):
-  name  = models.CharField("Název", maxlength=50)
-  fluff = models.TextField("Fluff")
-  start = models.DateTimeField("Začátek")
-  end   = models.DateTimeField("Konec")
-  game  = models.ForeignKey(Game)
-  def __str__(self):
-    return self.name
-  
-class EventMultiGame(models.Model):
-  name = models.CharField("Název", maxlength=50)
-  fluff = models.TextField("Fluff")
-  start = models.DateTimeField("Začátek")
-  end   = models.DateTimeField("Konec")
-  def __str__(self):
-    return self.name
 
-class MultiGameSlot(models.Model):
-  name = models.CharField("Název", maxlength=50)
-  start = models.DateTimeField("Začátek")
-  end = models.DateTimeField("Konec")
-  event = models.ForeignKey(EventMultiGame)
-  def __str__(self):
-    return self.name  
-
-class GameInSlot(models.Model):
-  game  = models.ForeignKey(Game)
-  slot  = models.ForeignKey(MultiGameSlot)
-  price = models.PositiveSmallIntegerField("Cena")
-  note  = models.CharField("Fancy name", maxlength=256)
 

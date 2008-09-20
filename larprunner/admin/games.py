@@ -3,7 +3,7 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import render_to_response
 from django.contrib.auth import authenticate, login
 from manipulation import my_login_required, createMenuItems, my_admin_required
-from models import Game, Log, EventOneGame, EventMultiGame, MultiGameSlot, GameInSlot
+from models import Game, Log
 from django.newforms import form_for_instance, form_for_model
 from django.newforms import ChoiceField
 from django.template import RequestContext

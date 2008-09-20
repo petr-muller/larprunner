@@ -1,13 +1,17 @@
 # This Python file uses the following encoding: utf-8
-from django.http import HttpResponseRedirect
-from django.shortcuts import render_to_response
 from django.contrib.auth import authenticate, login
-from manipulation import my_login_required, createMenuItems, my_admin_required
-from models import Game, Log, EventOneGame, EventMultiGame, MultiGameSlot, GameInSlot
-from django.newforms import form_for_instance, form_for_model
-from django.newforms.widgets import Textarea
+from django.http import HttpResponseRedirect
+from django.newforms import form_for_instance, form_for_model, BooleanField
+from django.newforms.widgets import Textarea, TextInput, Select, HiddenInput, CheckboxInput
+from django.shortcuts import render_to_response
 from django.template import RequestContext
 from forms import SlotForm
+from larprunner.events.forms import RegistrationForm, SingleEventForm, MultiEventForm
+from larprunner.events.models import Event, MultiGameSlot, GameInSlot
+from manipulation import my_login_required, createMenuItems, my_admin_required
+from models import Game, Log
+from larprunner.questions.models import Question
+
 
 @my_admin_required
 def overview(request):
@@ -24,55 +28,68 @@ def overview(request):
 def events(request):
   return render_to_response("admin/events.html",
                             { 'menuitems' : createMenuItems('events'),
-                              'events_s'  : EventOneGame.objects.all(),
-                              'events_m'  : EventMultiGame.objects.all(),
+                              'events_s'  : Event.objects.filter(type="single"),
+                              'events_m'  : Event.objects.filter(type="multi"),
                               'user'      : request.user,
                               'title'     : "Eventy"  }
                             )
 
 @my_admin_required
-def modify(request, eventid=None, type="single"):
-  chosen_model = {'single' : EventOneGame, 'multi' : EventMultiGame}
-  create_log   = {'single' : u"Vytvořen event s jednou hrou",
-                  'multi'  : u"Vytvořen event s více hrami"}
-  change_log   = {'single' : u"Změněn event s jednou hrou",
-                  'multi'  : u"Změněn event s více hrami"}
-  forms        = {'single' : "admin/singleeventform.html",
-                  'multi'  : "admin/multieventform.html"}
-  slots = ()
-  allow_slots = False
-  if eventid == "new":
-    EventForm = form_for_model(chosen_model[type])
-    log_message = create_log[type]
+def modify(request, eventid=None, type="single", regcreate=None):
+  
+  if type == "single":
+    Form  = SingleEventForm
   else:
-    inst = chosen_model[type].objects.get(id=eventid)
-    EventForm = form_for_instance(inst)
-    log_message = change_log[type]    
-    if type == 'multi':             
-      slots = MultiGameSlot.objects.filter(event=eventid)      
-      allow_slots = 1
+    Form  = MultiEventForm
+   
   if request.method == 'POST':
-    form = EventForm(request.POST)
-    if form.is_valid():
-      form.save()
-      log = Log(user=request.user, 
-                message=log_message+" "+form.clean_data['name'])
-      log.save()
-      request.user.message_set.create(message=change_log[type])
-      return HttpResponseRedirect('/admin/events/')
+    if regcreate is not None:      
+      form = RegistrationForm()
+      fields={}
+      for question in Question.objects.all():
+        fields["%s" % question.id] = BooleanField(label=question.uniq_name, widget=CheckboxInput)
+      form.setFields(fields)
+      form.setData(request.POST)
+      form.validate(request.POST)
+    else:
+      form = Form(request.POST)
+    print form
+    form.save(eventid)
+    return HttpResponseRedirect('/admin/events/%s/%s/' % (type, eventid))
   else:
-    EventForm.base_fields['fluff'].widget = Textarea(attrs={'rows': 5,
-                                                            'cols': 20})
-    form = EventForm()
-  return render_to_response(forms[type], 
+    
+    form = Form()
+    event = None
+    slots = None
+    reg   = None
+    if eventid != "new":
+      event = Event.objects.get(id=eventid)
+      form.loadValues(event)
+      slots = MultiGameSlot.objects.filter(event=event)
+      questions = Question.objects.all()
+      reg = RegistrationForm()
+      fields = {}
+      data = {}
+      our_questions = event.question.filter(event=event)      
+      for question in questions:
+        fields["%s" % question.id] = BooleanField(label=question.uniq_name, required=False, widget=CheckboxInput)        
+        if question in our_questions:          
+          fields["%s" % question.id].initial = True
+      
+      reg.setFields(fields)
+      reg.setData(data)
+      print question
+  
+  return render_to_response('admin/eventform.html', 
                             {'form'         : form,
                              'eventid'      : eventid,
-                             'menuitems'    : createMenuItems(),
-                             'allow_slots'  : allow_slots,
-                             'slots'        : slots,
+                             'menuitems'    : createMenuItems(),                             
                              'user'         : request.user,
-                             'title'        : "Vlastnosti jednorázové hry" },
-                             
+                             'title'        : "Vlastnosti hry",
+                             'event'        : event,
+                             'slots'        : slots,
+                             'reg'          : reg
+                             }
                             )
   
 @my_admin_required
@@ -82,6 +99,7 @@ def slot_modify(request, eventid, slotid=None):
     log_message = u"Pro event %s přidán slot"
     sgf = None
     slotid = None
+    
   else:
     inst = MultiGameSlot.objects.get(id=slotid)
     ActualSlotForm = form_for_instance(inst)
@@ -97,7 +115,11 @@ def slot_modify(request, eventid, slotid=None):
       request.user.message_set.create(message=u"V eventu %s změněn slot")
       return HttpResponseRedirect('/admin/events/multi/%s/' % eventid )
   else:
-    form = ActualSlotForm()  
+    form = ActualSlotForm()
+    form.initial['event'] = eventid
+    form.fields['event'].choices = ((eventid,"LARP"),)
+  
+    
   return render_to_response('admin/slotform.html',
                               {'form'         : form,
                                'slotform'     : sgf,
@@ -106,7 +128,7 @@ def slot_modify(request, eventid, slotid=None):
                                'eventid'      : eventid,
                                'gamespresent' : GameInSlot.objects.filter(slot=slotid),
                                'title'        : "Editace slotu",
-                               'uset'         : request.user},
+                               'user'         : request.user},
                               )
 @my_admin_required
 def add_game_to_slot(request, eventid="", slotid=""):
@@ -125,7 +147,3 @@ def add_game_to_slot(request, eventid="", slotid=""):
       return HttpResponseRedirect('/admin/events/multi/%s/slots/%s/' % (eventid, slotid))
   else:
     return HttpResponseRedirect('/admin/events/multi/%s/slots/%s/' % (eventid, slotid))    
-  
-
-     
-    
