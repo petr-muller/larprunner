@@ -1,10 +1,11 @@
 # This Python file uses the following encoding: utf-8
 from django import newforms as forms
-from larprunner.questions.models import Question
+from larprunner.questions.models import Question, ChoicesForQuestion
 from larprunner.admin.models import Game 
 from models import Event, ASTATES
-from larprunner.events.models import Registration
+from larprunner.events.models import Registration, QuestionForEvent
 from larprunner.users.models import Player
+
 
 class EventForm(forms.Form):  
   id    = forms.IntegerField(widget=forms.HiddenInput, required=False)
@@ -28,17 +29,16 @@ class EventForm(forms.Form):
       self.initial["game"] = event.game.id
     self.initial["state"] = event.state
 
-  def setGame(self, gameid):
-    return
   
   def save(self,eventid=None):
-    if self.data["id"] is None:
+    if not self.data["id"]:
       event = Event.objects.create(type =self.data["type"],
                                    name =self.data["name"],
                                    fluff=self.data["fluff"],
                                    end  =self.data["end"],
                                    start=self.data["start"],
-                                   game =self.data["game"],
+                                   game=Game.objects.get(id=self.data["game"]),
+                                   state = self.data["state"]
                                    )
     else:
       event = Event.objects.get(id=self.data["id"])
@@ -47,7 +47,7 @@ class EventForm(forms.Form):
       event.fluff = self.data["fluff"]
       event.start = self.data["start"]
       event.end   = self.data["end"]
-      self.setGame(self.data["game"])
+      event.game=Game.objects.get(id=self.data["game"])
       event.state = self.data["state"]
     event.save()
 
@@ -73,32 +73,51 @@ class DynamicForm(forms.Form):
     keys.sort()
     for k in keys:
       self.fields[k] = kwds[k]
-            
+
   def setData(self, kwds):
-    keys = kwds.keys()
-    keys.sort()
-    for k in keys:
-      self.data[k] = kwds[k]
-            
-  def validate(self, post):
     for name,field in self.fields.items():
-      try:
-        field.clean(post.get(name, 'off'))
-      except forms.ValidationError, e:
-        self.errors[name] = e.messages
-        
+        self.data[name] = field.widget.value_from_datadict(
+                            kwds, self.add_prefix(name))
+    self.is_bound = True
+
+  def validate(self, post):
+    self.full_clean()
+
 class RegistrationForm(DynamicForm):
   def save(self, eventid):
     event = Event.objects.get(id=eventid)
+    event.question.all().delete()
     event.question.clear()
-    for queid in [ int(x) for x in self.data.keys() ]:
-      event.question.add(Question.objects.get(id=queid))
+
+    keys = self.data.keys()
+    act_keys = []
+    for key in keys:
+      if key.find("required") == -1:
+        act_keys.append(key)
+    for queid in act_keys:
+      if self.data[queid]:
+
+        quevent = QuestionForEvent.objects.create(question=Question.objects.get(id=queid),
+                                                   required=False)
+        if self.data["%s_required" % queid]:
+          quevent.required = True
+        quevent.save()
+        event.question.add(quevent)
 
 class ApplicationForm(DynamicForm):
-  id = forms.CharField(widget=forms.HiddenInput)
   def save(self, eventid, user):
-    if self.data["id"] == "":
-      reg = Registration.objects.create(player = Player.objects.get(user=user),
-                                      event = Event.objects.get(id=eventid),
-                                      )
-    return
+    reg = Registration.objects.create(player = Player.objects.get(user=user),
+                                      event = Event.objects.get(id=eventid))
+
+    for key in self.clean_data.keys():
+      question = Question.objects.get(id=key)
+      choices = ChoicesForQuestion.objects.filter(question=question)
+      if len(choices) != 0:
+        if [].__class__ != self.clean_data[key].__class__:
+          self.clean_data[key] = [self.clean_data[key]]
+        for data in self.clean_data[key]:
+          reg.answers.create(question=question,
+                             answer=str(ChoicesForQuestion.objects.get(id=data).choice))
+      else:
+        reg.answers.create(question=question,
+                           answer = str(self.clean_data[key]))

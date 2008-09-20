@@ -17,6 +17,13 @@ ETYPES=(
         ('multi'  , 'Vícenásobná')
        )
 
+class QuestionForEvent(models.Model):
+  question = models.ForeignKey(Question)
+  required = models.BooleanField("Vyžadováno")
+
+  def asField(self):
+    return self.question.asField(self.required)
+
 class Event(models.Model):
   name  = models.CharField("Název", maxlength=50)
   type  = models.CharField("Typ", maxlength=10, choices=ETYPES) 
@@ -25,7 +32,7 @@ class Event(models.Model):
   end   = models.DateTimeField("Konec")
   game  = models.ForeignKey(Game, null=True)
   state   = models.CharField("Stav", maxlength=10, choices=ASTATES, default="CREATED")
-  question = models.ManyToManyField(Question, null=True)
+  question = models.ManyToManyField(QuestionForEvent, null=True)
   def __str__(self):
     return self.name
 

@@ -49,7 +49,7 @@ class Question(models.Model):
 
   objects = QuestionManager()
 
-  def asField(self):
+  def asField(self, required=True):
 
     choices = ChoicesForQuestion.objects.filter(question=self)
     choices_prepared=[]
@@ -57,13 +57,13 @@ class Question(models.Model):
       choices_prepared.append((choice.id, choice.choice))
 
     if self.type == "TEXTFIELD":
-      field = forms.CharField(max_length=self.maxlen,label=self.comment)
+      field = forms.CharField(max_length=self.maxlen,label=self.comment, required=required)
     elif self.type == "TEXTAREA":
-      field = forms.CharField(widget=forms.Textarea, label=self.comment, )
+      field = forms.CharField(widget=forms.Textarea, label=self.comment, required=required)
     elif self.type == "CHECKBOX":
-      field = forms.MultipleChoiceField(widget=forms.CheckboxSelectMultiple,choices=choices_prepared,label=self.comment)
+      field = forms.MultipleChoiceField(widget=forms.CheckboxSelectMultiple,choices=choices_prepared,label=self.comment,required=required)
     elif self.type == "RADIO":
-      field = forms.ChoiceField(choices=choices_prepared,label=self.comment)
+      field = forms.ChoiceField(choices=choices_prepared,label=self.comment,required=required)
     return field
 
 class ChoicesForQuestion(models.Model):
