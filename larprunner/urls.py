@@ -7,6 +7,8 @@ urlpatterns = patterns('larprunner',
   (r'^badlogin/{0,1}$',     'users.views.login', {'bad' : True}),
   (r'^registration/{0,1}$', 'users.views.register'),
   (r'^users/activate/(?P<activation_key>[a-f0-9]{40})/{0,1}$', 'users.views.activate'),
+  (r'^game/(?P<eventid>\d{1,3})/{0,1}$', 'events.views.event_app'),
+  (r'^game/(?P<eventid>\d{1,3})/unregister/{0,1}$', 'events.views.event_unapp'),
   
   
   (r'^/{0,1}$',               'events.views.mainpage'),
@@ -20,6 +22,7 @@ urlpatterns = patterns('larprunner',
   
   (r'^admin/events/{0,1}$', 'admin.events.events'),  
   (r'^admin/events/(?P<type>(single|multi))/(?P<eventid>(new)|(\d{1,3}))/{0,1}$', 'admin.events.modify'),
+  (r'^admin/events/(single|multi)/(?P<eventid>\d{1,3})/people/{0,1}$', 'admin.events.show_applied_people'),
   (r'^admin/events/(?P<type>(single|multi))/(?P<eventid>\d{1,3})/regcreate/{0,1}$', 'admin.events.modify', {'regcreate' : True}),
     
   (r'^admin/events/multi/(?P<eventid>\d{1,3})/slots/(?P<slotid>(new)|(\d{1,3}))/{0,1}$', 'admin.events.slot_modify'),

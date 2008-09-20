@@ -1,8 +1,9 @@
 # This Python file uses the following encoding: utf-8
 
 from django.db import models
-from larprunner.questions.models import Question
+from larprunner.questions.models import Question, Answer
 from larprunner.admin.models import Game
+from larprunner.users.models import Player
 
 # Create your models here.
 ASTATES=(
@@ -41,4 +42,8 @@ class GameInSlot(models.Model):
   slot  = models.ForeignKey(MultiGameSlot)
   price = models.PositiveSmallIntegerField("Cena")
   note  = models.CharField("Fancy name", maxlength=256)
-  
+
+class Registration(models.Model):
+  player = models.ForeignKey(Player)
+  event  = models.ForeignKey(Event)
+  answers = models.ManyToManyField(Answer, null=True)

@@ -1,7 +1,10 @@
+# This Python file uses the following encoding: utf-8
 from django import newforms as forms
 from larprunner.questions.models import Question
 from larprunner.admin.models import Game 
-from models import Event
+from models import Event, ASTATES
+from larprunner.events.models import Registration
+from larprunner.users.models import Player
 
 class EventForm(forms.Form):  
   id    = forms.IntegerField(widget=forms.HiddenInput, required=False)
@@ -11,7 +14,8 @@ class EventForm(forms.Form):
                                                        'cols' : 40}))
   start = forms.DateTimeField()  
   end   = forms.DateTimeField()
-  game  = forms.ModelChoiceField(Game.objects.all())  
+  game  = forms.ModelChoiceField(Game.objects.all(), required=True)
+  state = forms.ChoiceField(choices=ASTATES)
   
   def loadValues(self, event):    
     self.initial["id"] = event.id
@@ -22,68 +26,79 @@ class EventForm(forms.Form):
     self.initial["end"] = event.end
     if event.game is not None:
       self.initial["game"] = event.game.id
+    self.initial["state"] = event.state
+
+  def setGame(self, gameid):
+    return
   
   def save(self,eventid=None):
-    if self.clean_data["id"] is None:
-      event = Event.objects.create(type =self.clean_data["type"],
-                                   name =self.clean_data["name"],
-                                   fluff=self.clean_data["fluff"],
-                                   end  =self.clean_data["end"],
-                                   start=self.clean_data["start"],
-                                   game =self.clean_data["game"],
+    if self.data["id"] is None:
+      event = Event.objects.create(type =self.data["type"],
+                                   name =self.data["name"],
+                                   fluff=self.data["fluff"],
+                                   end  =self.data["end"],
+                                   start=self.data["start"],
+                                   game =self.data["game"],
                                    )
     else:
-      event = Event.objects.get(id=self.clean_data["id"])
-      event.type  = self.clean_data["type"]
-      event.name  = self.clean_data["name"]
-      event.fluff = self.clean_data["fluff"]
-      event.start = self.clean_data["start"]
-      event.end   = self.clean_data["end"]
-      event.game  = self.clean_data["game"]
+      event = Event.objects.get(id=self.data["id"])
+      event.type  = self.data["type"]
+      event.name  = self.data["name"]
+      event.fluff = self.data["fluff"]
+      event.start = self.data["start"]
+      event.end   = self.data["end"]
+      self.setGame(self.data["game"])
+      event.state = self.data["state"]
     event.save()
-  
+
+  def validate(self):
+    return
+
 class SingleEventForm(EventForm):
   type  = forms.CharField(widget=forms.HiddenInput, max_length=10, initial="single")
+
+  def setGame(self, gameid):
+    self.game = Game.objects.get(id=gameid)
 
 class MultiEventForm(EventForm):
   type  = forms.CharField(widget=forms.HiddenInput, max_length=10, initial="multi")
   game  = forms.ModelChoiceField(Game.objects.all(), widget=forms.HiddenInput, required=False)
 
-class RegistrationForm(forms.Form):    
-  """
-  Dynamic form that allows the user to change and then verify the data that was parsed
-  """
+  def setGame(self, gameid):
+    return
+
+class DynamicForm(forms.Form):
   def setFields(self, kwds):
-    """
-    Set the fields in the form
-    """
     keys = kwds.keys()
     keys.sort()
     for k in keys:
       self.fields[k] = kwds[k]
             
   def setData(self, kwds):
-    """
-    Set the data to include in the form
-    """
     keys = kwds.keys()
     keys.sort()
     for k in keys:
       self.data[k] = kwds[k]
             
   def validate(self, post):
-    """
-    Validate the contents of the form
-    """
     for name,field in self.fields.items():
       try:
         field.clean(post.get(name, 'off'))
       except forms.ValidationError, e:
         self.errors[name] = e.messages
-      
         
+class RegistrationForm(DynamicForm):
   def save(self, eventid):
     event = Event.objects.get(id=eventid)
     event.question.clear()
     for queid in [ int(x) for x in self.data.keys() ]:
       event.question.add(Question.objects.get(id=queid))
+
+class ApplicationForm(DynamicForm):
+  id = forms.CharField(widget=forms.HiddenInput)
+  def save(self, eventid, user):
+    if self.data["id"] == "":
+      reg = Registration.objects.create(player = Player.objects.get(user=user),
+                                      event = Event.objects.get(id=eventid),
+                                      )
+    return
