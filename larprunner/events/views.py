@@ -14,14 +14,14 @@ def mainpage(request):
     user = request.user
     games = Event.objects.exclude(state="CREATED")
     player = Player.objects.get(user=request.user)
-    regs = Registration.objects.filter(player=player)
 
-  else:
-    user = None
+    for game in games:
+      game.check_free_place(player.gender)
+      game.check_regged(player)
   return render_to_response("events/mainpage.html",
                             {'user' : user,
                              'games': games,
-                             'regs' : [ reg.event.id for reg in regs ]} )
+                             })
 @my_login_required
 def event_unapp(request, eventid):
   registration = Registration.objects.get(player=Player.objects.get(user=request.user),

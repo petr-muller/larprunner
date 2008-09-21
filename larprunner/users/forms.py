@@ -46,7 +46,6 @@ class RegistrationForm(forms.Form):
                                 label=_(u'Heslo'))
     password2 = forms.CharField(widget=forms.PasswordInput(attrs=attrs_dict, render_value=False),
                                 label=_(u'Ověření hesla'))
-    
     name = forms.CharField(max_length=30,
                            widget=forms.TextInput(attrs=attrs_dict),
                            label=_(u'Jméno'))
@@ -54,7 +53,8 @@ class RegistrationForm(forms.Form):
                            widget=forms.TextInput(attrs=attrs_dict),
                            label=_(u'Příjmení'))
     nick  = forms.CharField(max_length=30,
-                            required=False)
+                            required=False,
+                            label=u"Přezdívka")
     year_of_birth = forms.IntegerField(label=_(u'Rok narození'))
     phone = forms.CharField(max_length=13, min_length=13,
                             widget=forms.TextInput(attrs=attrs_dict),
@@ -69,13 +69,18 @@ class RegistrationForm(forms.Form):
         """
         if not alnum_re.search(self.clean_data['username']):
             raise forms.ValidationError(_(u'Uživatelské jméno může obsahovat pouze písmena, číslice a podtržítko'))
-        
-        
         try:
             user = User.objects.get(username__iexact=self.clean_data['username'])
         except User.DoesNotExist:
             return self.clean_data['username']
         raise forms.ValidationError(_(u'Toto uživatelské jméno už je zabráno'))
+
+    def clean_email(self):
+      try:
+        user = User.objects.get(email__iexact=self.clean_data["email"])
+      except User.DoesNotExist:
+        return self.clean_data["email"]
+      raise forms.ValidationError(_(u'Pro tento mail už jeden účet existuje'))
     
     def clean_year_of_birth(self):
       """
@@ -93,7 +98,7 @@ class RegistrationForm(forms.Form):
       if not PHONE_REGEXP.match(self.clean_data['phone'].replace(' ','')):
         raise forms.ValidationError(_(u'Špatně zadané telefonní číslo'))
       return self.clean_data['phone'].replace(' ','')
-      
+
     def clean(self):
         """
         Verify that the values entered into the two password fields

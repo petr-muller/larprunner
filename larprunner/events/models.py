@@ -36,6 +36,30 @@ class Event(models.Model):
   def __str__(self):
     return self.name
 
+  def check_free_place(self,player_gender):
+    if self.game:
+      regsforme = Registration.objects.filter(event=self)
+      actm=actf=0
+      for reg in regsforme:
+        if reg.player.gender == "Male":
+          actm += 1
+        else:
+          actf += 1
+      if player_gender == "Male":
+        self.free = (actm<self.game.getMaxM()) and (actm+actf < self.game.getMaxPlayers())
+      else:
+        self.free = (actf<self.game.getMaxF()) and (actm+actf < self.game.getMaxPlayers())
+    else:
+      self.free = True
+
+  def check_regged(self, player):
+    try:
+      Registration.objects.get(event=self,
+                               player=player)
+      self.regged = True
+    except Registration.DoesNotExist:
+      self.regged = False
+
 class MultiGameSlot(models.Model):
   name = models.CharField("Název", maxlength=50)
   start = models.DateTimeField("Začátek")

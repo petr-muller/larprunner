@@ -9,7 +9,16 @@ class Game(models.Model):
   roles_female  = models.PositiveSmallIntegerField("Počet ženských rolí")
   roles_both    = models.PositiveSmallIntegerField("Počet obecných rolí")
   def __str__(self):
-    return self.name  
+    return self.name
+
+  def getMaxM(self):
+    return self.roles_male + self.roles_both
+
+  def getMaxF(self):
+    return self.roles_female + self.roles_both
+
+  def getMaxPlayers(self):
+    return self.roles_male + self.roles_female + self.roles_both
 
 class Log(models.Model):
   date = models.DateTimeField(auto_now_add=True)

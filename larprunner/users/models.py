@@ -248,5 +248,5 @@ class Player(models.Model):
     surname = models.CharField(maxlength=30)
     year_of_birth = models.IntegerField()
     phone = models.CharField(maxlength=13)
-    gender = models.CharField(choices=GENDER_CHOICES, maxlength=4)
+    gender = models.CharField(choices=GENDER_CHOICES, maxlength=10)
     nick = models.CharField(maxlength=30)

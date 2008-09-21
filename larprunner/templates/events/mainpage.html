@@ -6,20 +6,27 @@
 <fieldset>
 <legend>Hry</legend>
 {% for game in games %}
-<p>{{ game.name }} 
-- {% ifequal game.state "OPEN"%}
+<p>{{ game.name }}
+  {% ifequal game.state "OPEN"%}
 	<span style="color:green;">otevřená</span>
   {% else %}
-  	<span style="color:red;">uzavřená</span> 
+	<span style="color:red;">uzavřená</span>
   {% endifequal %}
-  {% if game.id|in_list:regs %}
-  	<a href="/game/{{ game.id }}/unregister/">odhlásit</a>
+  {% if game.free %}
+	<span style="color:green;">(volno)</span>
   {% else %}
-  	{% ifequal game.state "OPEN" %}
-  	<a href="/game/{{ game.id }}">přihlásit</a>
-  	{% endifequal %}
+	<span style="color:red;">(plno)</span>
   {% endif %}
-  
+
+  {% if game.regged %}
+	<a href="/game/{{ game.id }}/unregister/">odhlásit</a>
+  {% else %}
+	{% ifequal game.state "OPEN" %}
+	{% if game.free %}
+		<a href="/game/{{ game.id }}">přihlásit</a>
+	{% endif %}
+	{% endifequal %}
+  {% endif %}
 </p>
 {% endfor %}
 </fieldset>
