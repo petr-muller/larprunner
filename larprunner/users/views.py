@@ -11,7 +11,7 @@ from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect
 from django.shortcuts import render_to_response
 from django.template import RequestContext
-from larprunner.users.forms import RegistrationForm
+from larprunner.users.forms import RegistrationForm, PreferencesForm
 from larprunner.users.models import RegistrationProfile
 
 
@@ -78,3 +78,18 @@ def register(request, success_url=None,
     
     return render_to_response(template_name,
                               { 'form': form, 'title' : 'Registrace'})
+
+def preferences(request, userid):
+  form = PreferencesForm()
+  print form.fields["password1"].required
+  if request.method == 'POST':
+    form = PreferencesForm(request.POST)
+    form.fields["password1"].required = False
+    form.fields["password2"].required = False
+    if form.is_valid():
+      form.save()
+  else:
+    form.load(request.user)
+
+  return render_to_response('users/preferences.html',
+                            { 'form' : form, 'title' : u'Uživatel %s' % request.user.username })

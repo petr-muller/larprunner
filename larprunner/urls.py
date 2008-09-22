@@ -6,6 +6,7 @@ urlpatterns = patterns('larprunner',
   (r'^login/{0,1}$',        'users.views.login'),
   (r'^logout/{0,1}$',       'users.views.logout'),
   (r'^passreset/done/{0,1}$',    'events.views.mainpage'),
+  (r'^users/prefs/(?P<userid>\d{1,3})/{0,1}$', 'users.views.preferences'),
   
   (r'^badlogin/{0,1}$',     'users.views.login', {'bad' : True}),
   (r'^registration/{0,1}$', 'users.views.register'),

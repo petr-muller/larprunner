@@ -4,7 +4,7 @@ from django.core.validators import alnum_re
 from django.contrib.auth.models import User
 import re
 
-from larprunner.users.models import RegistrationProfile
+from larprunner.users.models import RegistrationProfile, Player
 
 # I put this on all required fields, because it's easier to pick up
 # on them with CSS or JavaScript if they have a class of "required"
@@ -21,6 +21,7 @@ YEAR_REGEXP=re.compile("\d{4}")
 PHONE_REGEXP=re.compile("\+\d{12}")
 def _(msg):
   return msg
+
 
 class RegistrationForm(forms.Form):
     """
@@ -61,7 +62,6 @@ class RegistrationForm(forms.Form):
                             label=_(u'Telefon (ve tvaru +420 111 222 333)'))
     gender = forms.ChoiceField(choices=GENDER_CHOICES,
                                 label=_(u'Pohlaví'))
-
     def clean_username(self):
         """
         Validate that the username is alphanumeric and is not already
@@ -134,3 +134,59 @@ class RegistrationForm(forms.Form):
                                                                     gender = self.clean_data['gender'],
                                                                     nick = self.clean_data['nick'])
         return new_user
+
+class PreferencesForm(RegistrationForm):
+  username = forms.CharField(max_length=30,
+                              widget=forms.HiddenInput(),
+                              label=u'Login')
+
+  def clean_username(self):
+    return self.clean_data['username']
+
+  def clean_email(self):
+      try:
+        user = User.objects.get(email__iexact=self.clean_data["email"])
+      except User.DoesNotExist:
+        return self.clean_data["email"]
+      I = User.objects.get(id=self.clean_data["username"])
+      if user != I:
+        raise forms.ValidationError(_(u'Pro tento mail už jeden účet existuje'))
+      else:
+        return self.clean_data["email"]
+
+  def clean(self):
+        """
+        Verify that the values entered into the two password fields
+        match. Note that an error here will end up in
+        ``non_field_errors()`` because it doesn't apply to a single
+        field.
+        """
+        if 'password1' in self.clean_data and 'password2' in self.clean_data:
+            if self.clean_data['password1'] != self.clean_data['password2']:
+                raise forms.ValidationError(_(u'Rozdílná hesla'))
+        return self.clean_data
+
+  def save(self):
+    player = Player.objects.get(user=User.objects.get(id=self.clean_data["username"]))
+
+    player.user.email    = self.clean_data["email"]
+    player.name     = self.clean_data["name"]
+    player.surname  = self.clean_data["surname"]
+    player.year_of_birth     = self.clean_data["year_of_birth"]
+    player.phone    = self.clean_data["phone"]
+    player.gender   = self.clean_data["gender"]
+    if self.clean_data["password1"] and self.clean_data["password2"]:
+      player.user.set_password(self.clean_data["password1"])
+    player.save()
+    player.user.save()
+
+  def load(self, user):
+    player = Player.objects.get(user=user)
+    self.initial["username"] = user.id
+    self.initial["email"] = user.email
+    self.initial["name"] = player.name
+    self.initial["surname"] = player.surname
+    self.initial["year_of_birth"] = player.year_of_birth
+    self.initial["phone"] = player.phone
+    self.initial["gender"] = player.gender
+    self.initial["nick"] = player.nick
