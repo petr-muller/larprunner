@@ -20,6 +20,9 @@
 
   {% if game.regged %}
 	<a href="/game/{{ game.id }}/unregister/">odhlásit</a>
+	{% ifequal game.type "multi" %}
+		<a href="/game/{{ game.id }}/slots/">hry</a>
+	{% endifequal %}
   {% else %}
 	{% ifequal game.state "OPEN" %}
 	{% if game.free %}

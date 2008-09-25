@@ -2,9 +2,9 @@
 # Create your views here.
 from django.shortcuts import render_to_response
 from larprunner.admin.manipulation import my_login_required
-from larprunner.events.models import Event, Registration
+from larprunner.events.models import Event, Registration, MultiGameSlot
 from larprunner.admin.manipulation import my_login_required
-from larprunner.events.forms import ApplicationForm
+from larprunner.events.forms import ApplicationForm, SlotAppForm
 from larprunner.users.models import Player
 from django.http import HttpResponseRedirect
 
@@ -52,3 +52,20 @@ def event_app(request, eventid):
                              'form' : form,
                              'eventid'  : eventid,
                              })
+
+def slots(request, eventid):
+  event = Event.objects.get(id=eventid)
+  form = SlotAppForm()
+  form.loadFromEvent(event,Player.objects.get(user=request.user))
+
+  if request.method == "POST":
+    form.setData(request.POST)
+    form.validate()
+    if form.is_valid():
+      form.save(event, request.user)
+      return HttpResponseRedirect("/")
+
+  return render_to_response("events/slots_app.html",
+                            {'user' : request.user,
+                             'eventid' : eventid,
+                             'form' : form })

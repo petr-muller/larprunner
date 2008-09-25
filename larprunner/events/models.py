@@ -74,7 +74,24 @@ class GameInSlot(models.Model):
   price = models.PositiveSmallIntegerField("Cena")
   note  = models.CharField("Fancy name", maxlength=256)
 
+  def isFreeFor(self,player_gender):
+    regsforme = SlotGameRegistration.objects.filter(slot=self)
+    actm=actf=0
+    for reg in regsforme:
+      if reg.player.gender == "Male":
+        actm += 1
+      else:
+        actf += 1
+    if player_gender == "Male":
+      return (actm<self.game.getMaxM()) and (actm+actf < self.game.getMaxPlayers())
+    else:
+      return (actf<self.game.getMaxF()) and (actm+actf < self.game.getMaxPlayers())
+
 class Registration(models.Model):
   player = models.ForeignKey(Player)
   event  = models.ForeignKey(Event)
   answers = models.ManyToManyField(Answer, null=True)
+
+class SlotGameRegistration(models.Model):
+  player = models.ForeignKey(Player)
+  slot   = models.ForeignKey(GameInSlot)

@@ -13,6 +13,7 @@ urlpatterns = patterns('larprunner',
   (r'^users/activate/(?P<activation_key>[a-f0-9]{40})/{0,1}$', 'users.views.activate'),
   (r'^game/(?P<eventid>\d{1,3})/{0,1}$', 'events.views.event_app'),
   (r'^game/(?P<eventid>\d{1,3})/unregister/{0,1}$', 'events.views.event_unapp'),
+  (r'^game/(?P<eventid>\d{1,3})/slots/{0,1}$', 'events.views.slots'),
   
   
   (r'^/{0,1}$',               'events.views.mainpage'),
