@@ -28,8 +28,10 @@ class EventForm(forms.Form):
     if event.game is not None:
       self.initial["game"] = event.game.id
     self.initial["state"] = event.state
-
   
+  def getGame(self, id):
+    return Game.objects.get(id=self.data["game"])
+
   def save(self,eventid=None):
     if not self.data["id"]:
       event = Event.objects.create(type =self.data["type"],
@@ -37,7 +39,7 @@ class EventForm(forms.Form):
                                    fluff=self.data["fluff"],
                                    end  =self.data["end"],
                                    start=self.data["start"],
-                                   game=Game.objects.get(id=self.data["game"]),
+                                   game=self.getGame(self.data["game"]),
                                    state = self.data["state"]
                                    )
     else:
@@ -47,7 +49,7 @@ class EventForm(forms.Form):
       event.fluff = self.data["fluff"]
       event.start = self.data["start"]
       event.end   = self.data["end"]
-      event.game=Game.objects.get(id=self.data["game"])
+      event.game=self.getGame(self.data["game"])
       event.state = self.data["state"]
     event.save()
 
@@ -66,6 +68,9 @@ class MultiEventForm(EventForm):
 
   def setGame(self, gameid):
     return
+
+  def getGame(self, gameid):
+    return None
 
 class DynamicForm(forms.Form):
   def setFields(self, kwds):
