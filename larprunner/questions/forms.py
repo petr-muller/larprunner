@@ -33,9 +33,6 @@ class CreateQuestionForm(forms.Form):
 
     self.initial["choices"]   = "&".join([ x.choice for x in choices])
 
-
-
-
   def save(self):
     modificator = Question.objects.modQuestion
     if self.clean_data['id'] == "":
@@ -51,8 +48,3 @@ class CreateQuestionForm(forms.Form):
                                 comment = self.clean_data['comment'],
                                 choices = self.clean_data['choices'].split('&'))
     return mod_question
-    
-
-
-
-
