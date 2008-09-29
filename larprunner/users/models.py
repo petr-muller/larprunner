@@ -8,7 +8,6 @@ from django.conf import settings
 from django.db import models
 from django.template.loader import render_to_string
 from django.contrib.auth.models import User
-from django.contrib.sites.models import Site
 
 SHA1_RE = re.compile('^[a-f0-9]{40}$')
 
@@ -101,7 +100,7 @@ class RegistrationManager(models.Manager):
         if send_email:
             from django.core.mail import send_mail
             subject = render_to_string('users/activation_email_subject.txt',
-                                       { 'site': current_site })
+                                       { 'SITE_NAME': settings.SITE_NAME })
             # Email subject *must not* contain newlines
             subject = ''.join(subject.splitlines())
 
