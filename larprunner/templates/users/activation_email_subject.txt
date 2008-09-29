@@ -1,1 +1,1 @@
-Court of Moravia - registrace uživatele
+{{ SITE_NAME }} - registrace uživatele
