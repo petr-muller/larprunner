@@ -17,24 +17,24 @@ urlpatterns = patterns('larprunner',
   
   
   (r'^/{0,1}$',               'events.views.mainpage'),
-  (r'^admin/{0,1}$',          'admin.events.overview'),
+  (r'^admin/{0,1}$',          'admin.events_views.overview'),
   (r'^admin/logout/{0,1}$',   'users.views.logout' ),
   (r'^admin/userland/{0,1}$', 'events.views.mainpage'),
   
-  (r'^admin/games/{0,1}$', 'admin.games.administrate_games'),
-  (r'^admin/games/(?P<gameid>new|\d{1,3})/{0,1}$', 'admin.games.game_modify'),
-  (r'^admin/games/delete/(?P<gameid>\d{1,3})/{0,1}$', 'admin.games.game_delete'),
+  (r'^admin/games/{0,1}$', 'admin.games_views.administrate_games'),
+  (r'^admin/games/(?P<gameid>new|\d{1,3})/{0,1}$', 'admin.games_views.game_modify'),
+  (r'^admin/games/delete/(?P<gameid>\d{1,3})/{0,1}$', 'admin.games_views.game_delete'),
   
-  (r'^admin/events/{0,1}$', 'admin.events.events'),  
-  (r'^admin/events/(?P<type>(single|multi))/(?P<eventid>(new)|(\d{1,3}))/{0,1}$', 'admin.events.modify'),
-  (r'^admin/events/(single|multi)/(?P<eventid>\d{1,3})/people/{0,1}$', 'admin.events.show_applied_people'),
-  (r'^admin/events/(?P<type>(single|multi))/(?P<eventid>\d{1,3})/regcreate/{0,1}$', 'admin.events.modify', {'regcreate' : True}),
+  (r'^admin/events/{0,1}$', 'admin.events_views.events'),  
+  (r'^admin/events/(?P<type>(single|multi))/(?P<eventid>(new)|(\d{1,3}))/{0,1}$', 'admin.events_views.modify'),
+  (r'^admin/events/(single|multi)/(?P<eventid>\d{1,3})/people/{0,1}$', 'admin.events_views.show_applied_people'),
+  (r'^admin/events/(?P<type>(single|multi))/(?P<eventid>\d{1,3})/regcreate/{0,1}$', 'admin.events_views.modify', {'regcreate' : True}),
     
-  (r'^admin/events/multi/(?P<eventid>\d{1,3})/slots/(?P<slotid>(new)|(\d{1,3}))/{0,1}$', 'admin.events.slot_modify'),
-  (r'^admin/events/multi/(?P<eventid>\d{1,3})/slots/(?P<slotid>\d{1,3})/add/{0,1}$', 'admin.events.add_game_to_slot'),
+  (r'^admin/events/multi/(?P<eventid>\d{1,3})/slots/(?P<slotid>(new)|(\d{1,3}))/{0,1}$', 'admin.events_views.slot_modify'),
+  (r'^admin/events/multi/(?P<eventid>\d{1,3})/slots/(?P<slotid>\d{1,3})/add/{0,1}$', 'admin.events_views.add_game_to_slot'),
   
-  (r'^admin/questions/{0,1}$', 'admin.questions.questions'),
-  (r'^admin/questions/(?P<queid>(new)|(\d{1,3}))/{0,1}$', 'admin.questions.question_edit'),
+  (r'^admin/questions/{0,1}$', 'admin.questions_views.questions'),
+  (r'^admin/questions/(?P<queid>(new)|(\d{1,3}))/{0,1}$', 'admin.questions_views.question_edit'),
 )
 
 urlpatterns += patterns('',
