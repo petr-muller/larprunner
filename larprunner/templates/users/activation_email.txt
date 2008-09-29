@@ -1,7 +1,7 @@
 Dobrý den,
 
 pro dokončení registrace na přihlašovacím nástroji Court of Moravia navštivte prosím následující link:
-http://{{ SITE_URL }}/users/activate/{{ activation_key }}/
+{{ SITE_URL }}/users/activate/{{ activation_key }}/
 
 Učiňte tak prosím do {{ expiration_time }} dní, jinak bude vaše registrace zrušena a vy budete muset údaje vyplňovat znovu.
 
