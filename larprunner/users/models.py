@@ -100,18 +100,16 @@ class RegistrationManager(models.Manager):
                        
         if send_email:
             from django.core.mail import send_mail
-            from django.conf.settings import SITE_NAME, SITE_URL, ACCOUNT_ACTIVATION_DAYS
-            
             subject = render_to_string('users/activation_email_subject.txt',
                                        { 'site': current_site })
             # Email subject *must not* contain newlines
             subject = ''.join(subject.splitlines())
-            
+
             message = render_to_string('users/activation_email.txt',
                                        { 'activation_key': registration_profile.activation_key,
-                                         'expiration_days': ACCOUNT_ACTIVATION_DAYS,
-                                         'SITE_URL': SITE_URL,
-                                         'SITE_NAME': SITE_NAME })
+                                         'expiration_days': settings.ACCOUNT_ACTIVATION_DAYS,
+                                         'SITE_URL': settings.SITE_URL,
+                                         'SITE_NAME': settings.SITE_NAME })
             
             send_mail(subject, message, settings.DEFAULT_FROM_EMAIL, [new_user.email])
         return new_user
