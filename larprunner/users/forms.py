@@ -42,7 +42,7 @@ class RegistrationForm(forms.Form):
                                label=_(u'Login'))
     email = forms.EmailField(widget=forms.TextInput(attrs=dict(attrs_dict,
                                                                maxlength=75)),
-                             label=_(u'e-mail'))
+                             label=_(u'E-mail'))
     password1 = forms.CharField(widget=forms.PasswordInput(attrs=attrs_dict, render_value=False),
                                 label=_(u'Heslo'))
     password2 = forms.CharField(widget=forms.PasswordInput(attrs=attrs_dict, render_value=False),
@@ -59,7 +59,7 @@ class RegistrationForm(forms.Form):
     year_of_birth = forms.IntegerField(label=_(u'Rok narození'))
     phone = forms.CharField(max_length=13, min_length=13,
                             widget=forms.TextInput(attrs=attrs_dict),
-                            label=_(u'Telefon (ve tvaru +420 111 222 333)'))
+                            label=_(u'Telefon (ve tvaru +420111222333)'))
     gender = forms.ChoiceField(choices=GENDER_CHOICES,
                                 label=_(u'Pohlaví'))
     def clean_username(self):
