@@ -8,7 +8,6 @@ from larprunner.users.models import Player
 from larprunner.events.widgets import RadioSelectWithDisable
 from django.db.models import Q
 
-
 class EventForm(forms.Form):  
   id    = forms.IntegerField(widget=forms.HiddenInput, required=False)
   name  = forms.CharField(max_length=50)
@@ -127,7 +126,7 @@ class ApplicationForm(DynamicForm):
                              answer=str(ChoicesForQuestion.objects.get(id=data).choice))
       else:
         reg.answers.create(question=question,
-                           answer = str(self.clean_data[key]))
+                           answer = u'%s' % self.clean_data[key])
 
 class SlotAppForm(DynamicForm):
   def validate(self):
