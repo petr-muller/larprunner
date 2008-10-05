@@ -76,7 +76,12 @@ class MultiGameSlot(models.Model):
   end = models.DateTimeField("Konec")
   event = models.ForeignKey(Event)
   def __str__(self):
-    return self.name  
+    return self.name
+
+  def printify(self):
+    self.games_to_print = GameInSlot.objects.filter(slot = self)
+    for game in self.games_to_print:
+      game.printify()
 
 class GameInSlot(models.Model):
   game  = models.ForeignKey(Game)
@@ -84,7 +89,10 @@ class GameInSlot(models.Model):
   price = models.PositiveSmallIntegerField("Cena")
   note  = models.CharField("Fancy name", maxlength=256)
 
-  def isFreeFor(self,player_gender):
+  def printify(self):
+    self.regs = SlotGameRegistration.objects.filter(slot=self)
+
+  def isFreeFor(self, player_gender):
     regsforme = SlotGameRegistration.objects.filter(slot=self)
     actm=actf=0
     for reg in regsforme:

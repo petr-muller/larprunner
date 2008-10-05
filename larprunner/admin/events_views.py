@@ -175,3 +175,15 @@ def show_applied_people(request, eventid):
                                'cells'        : cells,
                                'headers'      : headlines},
                               )
+
+@my_admin_required
+def show_applied_people_in_slots(request, eventid):
+  event = Event.objects.get(id=eventid)
+  slots = event.multigameslot_set.all()
+  for slot in slots:
+    slot.printify()
+  return render_to_response('admin/people_in_slots.html',
+                            {'menuitems'      : createMenuItems(),
+                             'title'          : 'Sloty v %s' % event.name,
+                             'user'           : request.user,
+                             'slots'          : slots})
