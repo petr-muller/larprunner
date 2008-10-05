@@ -5,8 +5,8 @@
     <table>    
     {% for s_event in events_s %}
     <tr>
-    	<td><a href="/admin/events/single/{{s_event.id}}">{{ s_event }}</a></td>
-    	<td><a href="/admin/events/single/{{s_event.id}}/people/">Přihlášky</a></td>
+		<td><a href="/admin/events/single/{{s_event.id}}">{{ s_event }}</a></td>
+		<td><a href="/admin/events/single/{{s_event.id}}/people/">Přihlášky</a></td>
    	</tr>
     {% endfor %}
     </table>
@@ -14,7 +14,10 @@
     <fieldset><legend>Eventy s více hrami</legend>
     <table>    
     {% for m_event in events_m %}
-    <tr><td><a href="/admin/events/multi/{{m_event.id}}">{{ m_event }}</a></td></tr>    
+    <tr>
+		<td><a href="/admin/events/multi/{{m_event.id}}">{{ m_event }}</a></td>
+		<td><a href="/admin/events/multi/{{m_event.id}}/people/">Přihlášky</a></td>
+    </tr>
     {% endfor %}    
     </table>
     </fieldset>

@@ -24,10 +24,9 @@ def mainpage(request):
                              })
 @my_login_required
 def event_unapp(request, eventid):
-  registration = Registration.objects.get(player=Player.objects.get(user=request.user),
-                                          event=Event.objects.get(id=eventid))
-  registration.answers.all().delete()
-  registration.delete()
+  event = Event.objects.get(id=eventid)
+  player = Player.objects.get(user=request.user)
+  event.unregister(player)
 
   return HttpResponseRedirect("/")
 

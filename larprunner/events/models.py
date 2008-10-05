@@ -60,6 +60,16 @@ class Event(models.Model):
     except Registration.DoesNotExist:
       self.regged = False
 
+  def unregister(self, player):
+    registration = Registration.objects.get(player=player, event=self)
+    registration.answers.all().delete()
+    registration.delete()
+
+    slots = self.multigameslot_set.all()
+    for slot in slots:
+      for game in slot.gameinslot_set.all():
+        SlotGameRegistration.objects.filter(player=player, slot=game).delete()
+
 class MultiGameSlot(models.Model):
   name = models.CharField("Název", maxlength=50)
   start = models.DateTimeField("Začátek")
