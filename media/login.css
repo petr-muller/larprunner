@@ -1,0 +1,54 @@
+body {
+  background:#fff; color:#000;
+  text-align:center;
+  font-family:"Lucida Sans Unicode", Arial, Helvetica, sans-serif;
+  font-size:0.9em;
+  }
+
+#wrapper {  
+  width:25em;
+  margin:5em auto; padding:2.7em 1em 1.3em;
+  }
+
+
+legend {
+  color:#777;
+  font-weight:bold;
+  }
+
+label {
+  display:block; padding:1em 1em 0.5em;
+  font-size:0.6em; color:#efc500;
+  }
+
+#username, #password, #submit, #ch-old, #ch-new1, #ch-new2 {
+  font-size:1.6em;
+  font-family:"Lucida Sans Unicode", Arial, Helvetica, sans-serif;
+  }
+
+#submit {
+  color:#efc500;
+  margin:1em 0 0.5em;
+  }
+
+#submit:focus {
+  color:#000;
+  }
+
+input {
+  border:1px solid #777;
+  background:#fff;
+  }
+
+input:hover {
+  border:1px solid #efc500;
+  }
+
+input:focus {
+  border:1px solid #efc500;
+  background:#efc500;
+  }
+
+#copy {margin:0.7em 0 0; color:#777; font-size:0.8em;}
+a {color:#777;}
+a:hover, a:focus {background:#efc500; color:#fff; text-decoration:none;}

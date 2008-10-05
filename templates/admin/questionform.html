@@ -1,0 +1,13 @@
+{% extends "commonui.html" %}
+
+{% block content %}
+<form action="." method="post">
+    <table>
+    {{ form.as_table }}
+    </table>
+	<input type="submit" value="Odeslat">
+</form>
+<form action="/admin/questions/">
+<input type="submit" value="Zpět">
+</form>
+{% endblock %}

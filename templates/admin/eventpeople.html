@@ -1,0 +1,23 @@
+{% extends "commonui.html" %}
+{% block content %}    
+    <table>
+	<tr>
+	{% for head in headers %}
+	<td>{{ head }}</td>
+	{% endfor %}
+	</tr>
+	
+	{% for row in cells %}
+	<tr>
+		{% for col in row %}
+			<td>{{ col }}</td>
+		{% endfor %}	
+	</tr>
+	{% endfor %}
+					
+	
+    
+    </table>    
+{% endblock %}
+
+

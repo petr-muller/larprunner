@@ -1,0 +1,15 @@
+    {% extends "commonui.html" %}
+    {% block content %}    
+    <fieldset><legend>Hry</legend>
+    <table>
+    {% for game in games %}
+    <tr><td><a href="/admin/games/{{game.id}}">{{ game }}</a></tr><td>
+    {% endfor %}
+    </table>
+    </fieldset>
+    <fieldset><legend>Akce</legend>
+    <a href="/admin/games/new">Nová hra</a>
+    </fieldset>
+    {% endblock %}
+
+
