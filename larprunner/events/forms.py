@@ -161,11 +161,11 @@ class SlotAppForm(DynamicForm):
 
   def save(self, event, user):
     player = Player.objects.get(user=user)
-    for key in self.cleaned_data.keys():
-      if self.cleaned_data[key] != u"":
+    for key in self.clean_data.keys():
+      if self.clean_data[key] != u"":
         for reg in MultiGameSlot.objects.get(id=key).gameinslot_set.all():
           reg.slotgameregistration_set.filter(player=player).delete()
-        if self.cleaned_data[key] != "-1":
+        if self.clean_data[key] != "-1":
           sgr = SlotGameRegistration.objects.create(player=player,
-                                                  slot=GameInSlot(id=self.cleaned_data[key]))
+                                                  slot=GameInSlot(id=self.clean_data[key]))
           sgr.save()
