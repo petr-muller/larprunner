@@ -3,7 +3,7 @@ from django import newforms as forms
 from larprunner.questions.models import Question, ChoicesForQuestion
 from larprunner.admin.models import Game 
 from models import Event, ASTATES
-from larprunner.events.models import Registration, QuestionForEvent, SlotGameRegistration, GameInSlot
+from larprunner.events.models import Registration, QuestionForEvent, SlotGameRegistration, GameInSlot, MultiGameSlot
 from larprunner.users.models import Player
 from larprunner.events.widgets import RadioSelectWithDisable
 from django.db.models import Q
@@ -141,29 +141,31 @@ class SlotAppForm(DynamicForm):
     fields = {}
     for slot in event.multigameslot_set.all():
       choices = []
+      initial = -1
       for game in slot.gameinslot_set.all():
         if game.isFreeFor(player.gender):
           choices.append([game.id, game.game.name])
         else:
-          choices.append([game.id, game.game.name, "disabled"])
-      fields["%s" % slot.id] = forms.ChoiceField(widget=RadioSelectWithDisable,
+          choices.append([game.id, game.game.name, u"disabled"])
+        if SlotGameRegistration.objects.filter(player=player, slot=game).count() > 0:
+          initial = game.id
+
+      choices.append([-1, "Nic"])
+
+      fields[u"%s" % slot.id] = forms.ChoiceField(widget=RadioSelectWithDisable,
                                                  required=False,
                                                  label=slot.name,
-                                                 choices=choices)
+                                                 choices=choices,
+                                                 initial=initial)
     self.setFields(fields)
 
   def save(self, event, user):
     player = Player.objects.get(user=user)
-    q = Q()
-    for slot in event.multigameslot_set.all():
-      for game in slot.gameinslot_set.all():
-        q = q | Q(slot=game)
-    regs = SlotGameRegistration.objects.filter(q)
-    regs = regs.filter(player=player)
-    regs.delete()
-
-    for key in self.clean_data.keys():
-      if self.clean_data[key] != "":
-        sgr = SlotGameRegistration.objects.create(player=player,
-                                                  slot=GameInSlot(id=self.clean_data[key]))
-        sgr.save()
+    for key in self.cleaned_data.keys():
+      if self.cleaned_data[key] != u"":
+        for reg in MultiGameSlot.objects.get(id=key).gameinslot_set.all():
+          reg.slotgameregistration_set.filter(player=player).delete()
+        if self.cleaned_data[key] != "-1":
+          sgr = SlotGameRegistration.objects.create(player=player,
+                                                  slot=GameInSlot(id=self.cleaned_data[key]))
+          sgr.save()

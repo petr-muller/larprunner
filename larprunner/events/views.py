@@ -62,9 +62,8 @@ def slots(request, eventid):
     form.validate()
     if form.is_valid():
       form.save(event, request.user)
-      return HttpResponseRedirect("/")
-
-  return render_to_response("events/slots_app.html",
-                            {'user' : request.user,
-                             'eventid' : eventid,
-                             'form' : form })
+      return HttpResponseRedirect(u"/")
+  return render_to_response(u"events/slots_app.html",
+                            {u'user' : request.user,
+                             u'eventid' : eventid,
+                             u'form' : form })
