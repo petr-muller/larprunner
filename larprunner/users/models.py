@@ -8,6 +8,9 @@ from django.conf import settings
 from django.db import models
 from django.template.loader import render_to_string
 from django.contrib.auth.models import User
+from django.contrib.sites.models import Site
+from django.template import Context, loader
+
 
 SHA1_RE = re.compile('^[a-f0-9]{40}$')
 
@@ -248,3 +251,22 @@ class Player(models.Model):
     phone = models.CharField(maxlength=13)
     gender = models.CharField(choices=GENDER_CHOICES, maxlength=10)
     nick = models.CharField(maxlength=30)
+
+    def force_reset(self):
+      email_template_name='password_reset_email.html'
+      from django.core.mail import send_mail
+      new_pass = User.objects.make_random_password()
+      self.user.set_password(new_pass)
+      self.user.save()
+      current_site = Site.objects.get_current()
+      site_name = current_site.name
+      domain = current_site.domain
+      t = loader.get_template(email_template_name)
+      c = {
+            'new_password': new_pass,
+            'email': self.user.email,
+            'domain': domain,
+            'site_name': site_name,
+            'user': self.user,
+        }
+      send_mail('Password reset on %s' % site_name, t.render(Context(c)), None, [self.user.email])

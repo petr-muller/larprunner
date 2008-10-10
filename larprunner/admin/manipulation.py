@@ -19,6 +19,7 @@ def createMenuItems(active=None):
   ret.append(menuitem("games",    u"Hry", 0))
   ret.append(menuitem("events",   u"Akce", 0))
   ret.append(menuitem("",         u"Overview", 0))
+  ret.append(menuitem("users",    u"Uživatelé", 0))
   ret.append(menuitem("userland", u"Uživatelský pohled", 0))
   ret.append(menuitem("logout",   u"Odhlásit", 0))
   

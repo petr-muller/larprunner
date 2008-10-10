@@ -1,0 +1,23 @@
+{% extends "commonui.html" %}
+{% block content %}
+    <table>
+    <tr>
+		<th>Username</th>
+		<th>Jméno</th>
+		<th>Email</th>
+		<th>Telefon</th>
+		<th>Heslo</th>
+    <tr>
+    {% for player in players %}
+    <tr>
+		<td>{{player.user.username}}</td>
+		<td>{{player.surname}}, {{player.name}} {% if player.nick %} ({{player.nick}}) {% endif %}</td>
+		<td>{{player.user.email}}</td>
+		<td>{{player.phone}}</td>
+		<td><a href="reset/{{ player.id }}/">reset</td>
+    </tr>
+    {% endfor %}
+    </table>
+{% endblock %}
+
+
