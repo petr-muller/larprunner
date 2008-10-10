@@ -1,12 +1,18 @@
 {% extends "commonuiuser.html" %}
-{% load tags %}
 
 {% block content %}
 
 <fieldset>
 <legend>Hry</legend>
 {% for game in games %}
-<p>{{ game.name }}
+<p>
+{% ifequal game.type "multi" %}
+  	<img src="/media/aicon.png">
+  {% else %}
+  	<img src="/media/licon.png">
+  {% endifequal %}
+{{ game.name }}
+  
   {% ifequal game.state "OPEN"%}
 	<span style="color:green;">otevřená</span>
   {% else %}
