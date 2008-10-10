@@ -4,39 +4,55 @@
 
 <fieldset>
 <legend>Hry</legend>
+<table>
 {% for game in games %}
-<p>
+<tr>
+<td>
 {% ifequal game.type "multi" %}
   	<img src="/media/aicon.png">
   {% else %}
   	<img src="/media/licon.png">
   {% endifequal %}
+</td>
+<td>
 {{ game.name }}
-  
+</td>
+<td> 
   {% ifequal game.state "OPEN"%}
 	<span style="color:green;">otevřená</span>
   {% else %}
 	<span style="color:red;">uzavřená</span>
   {% endifequal %}
+</td>
+<td>
   {% if game.free %}
 	<span style="color:green;">(volno)</span>
   {% else %}
 	<span style="color:red;">(plno)</span>
   {% endif %}
+</td>
 
   {% if game.regged %}
+  <td>
 	<a href="/game/{{ game.id }}/unregister/">odhlásit</a>
+  </td>
+  <td>
 	{% ifequal game.type "multi" %}
 		<a href="/game/{{ game.id }}/slots/">hry</a>
 	{% endifequal %}
+  </td>
   {% else %}
+  <td>
 	{% ifequal game.state "OPEN" %}
 	{% if game.free %}
 		<a href="/game/{{ game.id }}">přihlásit</a>
 	{% endif %}
 	{% endifequal %}
+  </td>
+  <td></td>
   {% endif %}
-</p>
+</tr>
 {% endfor %}
+</table>
 </fieldset>
 {% endblock %}
