@@ -11,4 +11,4 @@ class SlotForm(forms.Form):
   games = forms.ChoiceField()
   slot  = forms.CharField()
   price = forms.IntegerField()
-  note  = forms.CharField()
+  note  = forms.CharField(required=False)
