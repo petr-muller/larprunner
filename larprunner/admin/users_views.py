@@ -6,10 +6,10 @@ from manipulation import my_login_required, createMenuItems, my_admin_required
 from larprunner.users.models import Player
 
 @my_admin_required
-def list_users(request):
+def list_users(request, sort="id"):
   return render_to_response("admin/users.html",
                             { 'menuitems' : createMenuItems('users'),
-                              'players' : Player.objects.all(),
+                              'players'   : Player.objects.select_related().order_by(sort),
                               'user'      : request.user,
                               'title'     : "Uživatelé"  }
                             )

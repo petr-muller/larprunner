@@ -3,9 +3,10 @@
     <table>
     <tr>
 		<th>Username</th>
-		<th>Jméno</th>
+		<th><a href="/admin/users/sort_by_name/">Jméno</a></th>
 		<th>Email</th>
 		<th>Telefon</th>
+		<th><a href="/admin/users/sort_by_year_of_birth/">Narození</a></th>
 		<th>Heslo</th>
     <tr>
     {% for player in players %}
@@ -14,6 +15,7 @@
 		<td>{{player.surname}}, {{player.name}} {% if player.nick %} ({{player.nick}}) {% endif %}</td>
 		<td>{{player.user.email}}</td>
 		<td>{{player.phone}}</td>
+		<td>{{player.year_of_birth}}</td>
 		<td><a href="reset/{{ player.id }}/">reset</td>
     </tr>
     {% endfor %}

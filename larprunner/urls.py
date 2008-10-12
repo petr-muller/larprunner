@@ -22,6 +22,7 @@ urlpatterns = patterns('larprunner',
   (r'^admin/userland/{0,1}$', 'events.views.mainpage'),
   (r'^admin/users/{0,1}$',   'admin.users_views.list_users'),
   (r'^admin/users/reset/(?P<pid>\d+)/{0,1}', 'admin.users_views.admin_force_passwd_reset'),
+  (r'^admin/users/sort_by_(?P<sort>[a-z_]+)/{0,1}', 'admin.users_views.list_users'),
   
   (r'^admin/games/{0,1}$', 'admin.games_views.administrate_games'),
   (r'^admin/games/(?P<gameid>new|\d{1,3})/{0,1}$', 'admin.games_views.game_modify'),
