@@ -16,7 +16,12 @@
 <span id="small-menu">
 <legend>Sloty</legend>
 {% for slot in slots %}
-<p><a href="/admin/events/multi/{{ event.id }}/slots/{{ slot.id }}/">{{slot}}</a></p>
+<table>
+<tr>
+	<td><a href="/admin/events/multi/{{ event.id }}/slots/{{ slot.id }}/">{{slot}}</a></td>
+	<td><a href="/admin/events/multi/{{ event.id }}/slots/{{ slot.id }}/delete/">smazat</a></td>
+</tr>
+</table>
 {% endfor %}
 <p><a href="/admin/events/multi/{{ event.id }}/slots/new/">Nový slot</a></p>
 </span>

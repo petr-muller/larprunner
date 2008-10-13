@@ -187,3 +187,15 @@ def show_applied_people_in_slots(request, eventid):
                              'title'          : 'Sloty v %s' % event.name,
                              'user'           : request.user,
                              'slots'          : slots})
+
+@my_admin_required
+def delete_slot(request, eventid, slotid):
+  slot = MultiGameSlot.objects.get(id=slotid)
+  slot.delete()
+  return HttpResponseRedirect('/admin/events/multi/%s/' % (eventid,))
+
+@my_admin_required
+def delete_game_from_slot(request, eventid, slotid, gameid):
+  game = GameInSlot.objects.get(id=gameid)
+  game.delete()
+  return HttpResponseRedirect('/admin/events/multi/%s/slots/%s/' % (eventid, slotid))

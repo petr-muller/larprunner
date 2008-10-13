@@ -35,6 +35,8 @@ urlpatterns = patterns('larprunner',
     
   (r'^admin/events/multi/(?P<eventid>\d{1,3})/slots/(?P<slotid>(new)|(\d{1,3}))/{0,1}$', 'admin.events_views.slot_modify'),
   (r'^admin/events/multi/(?P<eventid>\d{1,3})/slots/(?P<slotid>\d{1,3})/add/{0,1}$', 'admin.events_views.add_game_to_slot'),
+  (r'^admin/events/multi/(?P<eventid>\d{1,3})/slots/(?P<slotid>\d{1,3})/delete/{0,1}$', 'admin.events_views.delete_slot'),
+  (r'^admin/events/multi/(?P<eventid>\d{1,3})/slots/(?P<slotid>\d{1,3})/(?P<gameid>\d{1,3})/delete/{0,1}$', 'admin.events_views.delete_game_from_slot'),
   (r'^admin/events/multi/(?P<eventid>\d{1,3})/people_at_slots/{0,1}$', 'admin.events_views.show_applied_people_in_slots'),
   (r'^admin/questions/{0,1}$', 'admin.questions_views.questions'),
   (r'^admin/questions/(?P<queid>(new)|(\d{1,3}))/{0,1}$', 'admin.questions_views.question_edit'),
