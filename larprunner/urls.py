@@ -14,8 +14,7 @@ urlpatterns = patterns('larprunner',
   (r'^game/(?P<eventid>\d{1,3})/{0,1}$', 'events.views.event_app'),
   (r'^game/(?P<eventid>\d{1,3})/unregister/{0,1}$', 'events.views.event_unapp'),
   (r'^game/(?P<eventid>\d{1,3})/slots/{0,1}$', 'events.views.slots'),
-  
-  
+
   (r'^/{0,1}$',               'events.views.mainpage'),
   (r'^admin/{0,1}$',          'admin.events_views.overview'),
   (r'^admin/logout/{0,1}$',   'users.views.logout' ),
@@ -26,6 +25,7 @@ urlpatterns = patterns('larprunner',
   
   (r'^admin/games/{0,1}$', 'admin.games_views.administrate_games'),
   (r'^admin/games/(?P<gameid>new|\d{1,3})/{0,1}$', 'admin.games_views.game_modify'),
+  (r'^admin/games/(?P<gameid>\d{1,3})/questions/{0,1}$', 'admin.games_views.game_modify', {'qmod':True}),
   (r'^admin/games/delete/(?P<gameid>\d{1,3})/{0,1}$', 'admin.games_views.game_delete'),
   
   (r'^admin/events/{0,1}$', 'admin.events_views.events'),  

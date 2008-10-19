@@ -157,6 +157,8 @@ def show_applied_people(request, eventid):
   people.sort(lambda x,y: cmp(x.surname, y.surname))
 
   headlines = [ "Jméno", "Telefon", "Email", "Rok narození"] + [ que.question.uniq_name for que in event.question.all() ]
+  if event.game is not None:
+    headlines.extend([ que.question.uniq_name for que in event.game.questionforgame_set.all() ])
   cells = []
   for player in people:
     row   = [ "%s, %s (%s)" %  (player.surname, player.name, player.nick) ]
@@ -165,7 +167,10 @@ def show_applied_people(request, eventid):
     for question in [ que.question for que in event.question.all()]:
       answers = reg.answers.filter(question=question)
       row += [ ",".join( [ ans.answer for ans in answers ]) ]
-
+    if event.game is not None:
+      for question in [ que.question for que in event.game.questionforgame_set.all()]:
+        answers = reg.answers.filter(question=question)
+        row += [ ",".join( [ ans.answer for ans in answers ]) ]
     cells.append(row)
 
   return render_to_response('admin/eventpeople.html',

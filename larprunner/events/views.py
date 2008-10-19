@@ -33,10 +33,18 @@ def event_unapp(request, eventid):
 @my_login_required
 def event_app(request, eventid):
   event = Event.objects.get(id=eventid)
-  questions = event.question.all()
+  questions_for_event = event.question.all()
+  questions_for_game = None
+  if event.game is not None:
+    questions_for_game = event.game.questionforgame_set.all()
   fields= {}
-  for question in questions:
+  for question in questions_for_event:
     fields["%s" % question.question.id] = question.asField()
+  for question in questions_for_game:
+    fields["%s" % question.question.id] = question.asField()
+    fields["%s" % question.question.id].label = u"Otázka ke hře %s: %s" % (event.game.name,
+                                                                          fields["%s" % question.question.id].label)
+
   form = ApplicationForm()
   form.setFields(fields)
   if request.method == "POST":

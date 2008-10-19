@@ -7,6 +7,19 @@
     </table>
 	<input type="submit" value="Odeslat">
 </form>
+
+{% ifnotequal questions None %}
+<fieldset>
+<legend>Otázky</legend>
+<form action="/admin/games/{{ gameid }}/questions/" method="post">
+<table>
+{{ questions.as_table }}
+</table>
+<p><input type="submit" value="Odeslat" /></p>
+</form>
+</fieldset>
+{% endifnotequal%}
+
 {% ifnotequal gameid None %}
 <form action="/admin/games/delete/{{ gameid }}/">
 <input type="submit" value="Smazat">
