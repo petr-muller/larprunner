@@ -1,9 +1,15 @@
 {% extends "commonui.html" %}
 {% block content %}
 <table>
- {% for reg in regs %}
+  <tr>
+    {% for headline in headlines %} 
+      <th>{{ headline }}</th>
+    {% endfor %}
+ {% for row in rows %}
  <tr>
- <td>{{reg.player.name}}, {{reg.player.surname}} ({{reg.player.nick}})</td>
+   {% for col in row %}
+   <td>{{ col }}</td>
+   {% endfor %}
  </tr>
  {% endfor %}
  </table>

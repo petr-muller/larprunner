@@ -7,7 +7,7 @@ from django.shortcuts import render_to_response
 from django.template import RequestContext
 from forms import SlotForm
 from larprunner.events.forms import RegistrationForm, SingleEventForm, MultiEventForm
-from larprunner.events.models import Event, MultiGameSlot, GameInSlot, Registration
+from larprunner.events.models import Event, MultiGameSlot, GameInSlot, Registration, SlotGameRegistration
 from manipulation import my_login_required, createMenuItems, my_admin_required
 from models import Game, Log
 from larprunner.questions.models import Question
@@ -209,12 +209,23 @@ def delete_game_from_slot(request, eventid, slotid, gameid):
 @my_admin_required
 def slot_details(request, eventid, slotid):
   game = GameInSlot.objects.get(id=slotid)
-  regs = SlotGameRegistration.objects.filter(game=game).order_by("player")
+  regs = SlotGameRegistration.objects.filter(slot=game).order_by("player")
+  headlines = [ "Jméno"] + [ que.question.uniq_name for que in game.game.questionforgame_set.all() ]
   people = [ reg.player for reg in regs ]
   people.sort(lambda x,y: cmp(x.surname, y.surname))
+  rows = []
+  for person in people:
+    cols = [ person.name + person.surname + "(" + person.nick + ")" ]
+    registration = SlotGameRegistration.objects.get(slot=game, player=person)
+    for question in game.game.questionforgame_set.all():
+      answers = registration.answers.filter(question=question.question)
+      cols += [ ",".join( [ ans.answer for ans in answers ]) ]
+    rows.append(cols)
+
   return render_to_response("admin/slot_details.html",
                             {"menuitems"      : createMenuItems(),
                              'title'          : "Detaily slotu",
                              'user'           : request.user,
                              'game'           : game,
-                             'regs'           : regs})
+                             'rows'           : rows,
+                             'headlines'      : headlines})
