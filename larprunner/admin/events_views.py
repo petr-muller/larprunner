@@ -191,7 +191,8 @@ def show_applied_people_in_slots(request, eventid):
                             {'menuitems'      : createMenuItems(),
                              'title'          : 'Sloty v %s' % event.name,
                              'user'           : request.user,
-                             'slots'          : slots})
+                             'slots'          : slots,
+                             'eventid'        : eventid})
 
 @my_admin_required
 def delete_slot(request, eventid, slotid):
@@ -204,3 +205,12 @@ def delete_game_from_slot(request, eventid, slotid, gameid):
   game = GameInSlot.objects.get(id=gameid)
   game.delete()
   return HttpResponseRedirect('/admin/events/multi/%s/slots/%s/' % (eventid, slotid))
+
+@my_admin_required
+def slot_details(request, eventid, slotid):
+  game = GameInSlot.objects.get(id=slotid)
+  return render_to_response("admin/slot_details.html",
+                            {"menuitems"      : createMenuItems(),
+                             'title'          : "Detaily slotu",
+                             'user'           : request.user,
+                             'game'           : game})

@@ -12,7 +12,7 @@
     
     <td>
     	<table>
-    	<tr>{{game.game.name}}</tr>
+    	<tr><a href="/admin/events/multi/{{eventid}}/slot_details/{{game.id}}/">{{game.game.name}}</a></tr>
     	{% for reg in game.regs %}
     	<tr>
     		<td style="background : {% ifequal reg.player.gender "Male" %} #CCEEFF {% else %} #FF9999 {% endifequal %};">
