@@ -1,13 +1,15 @@
 {% extends "commonui.html" %}
 {% block content %} 
-<form action="/login/" method="post">
+<form action="/login/" method="post" class="margined">
 <label for="username">Login</label>
 <input type="text" name="username" id="username" maxlength="20" />
-<label for="password">Password</label>
+<label for="password">Heslo</label>
 <input type="password" name="password" id="password" maxlength="20" />
 <input type="hidden" name="next" id="next" value={{ next }} />
 <input type="submit" value="Login" id="submit" />
 </form>
 <a href="/registration/">Nová registrace</a>
 <a href="/passreset/">Zapomenuté heslo?</a>
- {% endblock %}
+<p>Vítejte v přihláškách</p>
+<p>Vytvořením účtu získáte jeden přístup ke všem stávajícím i budoucím hrám, který pro vás připravujeme. Po přihlášení se pak budete moci zapsat na konkrétní akci</p>
+{% endblock %}

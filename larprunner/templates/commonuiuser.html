@@ -1,37 +1,39 @@
 <html>
-	<head>
-		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-		<meta name="author" content="Petr Muller" />
-		<link rel="stylesheet" href="/styles/main.css" type="text/css" media="screen" />
-		<title>larp-runner</title>
-	</head>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<meta name="author" content="Petr Muller" />
+	<link rel="stylesheet" href="/styles/main.css" type="text/css" media="screen" />
+  <link rel="shortcut icon" href="http://www.courtofmoravia.com/favicon.ico" type="image/x-icon" />
+	<title>Court of Moravia &raquo; Přihláška</title>
+</head>
 
-	<body>
+<body>
 
-		<div id="wrapper">
-			<fieldset>
-				<legend>larp-runner</legend>
-				<span id="small-menu">
-				{% ifnotequal user None %}
-					{{ user.username }} |
-					{% if user.is_staff %}
- 						<a href="/admin/">Administrace</a> |
-					{% endif %}
-					<a href="/users/prefs/{{ user.id }}">Účet</a> | 
-					<a href="/logout/">Odhlásit</a>
-				
-				{% else %}
-					nepřihlášen | 
-					<a href="/login/">Přihlásit</a> | 
-					<a href="/registration/">Registrace</a>
-				{% endifnotequal %}
-				</span> 
+<div id="wrapper">
+	<fieldset>
+		<legend>Přihláška</legend>
+		<span id="small-menu">
+		{% ifnotequal user None %}
+			{{ user.username }} |
+			{% if user.is_staff %}
+			<a href="/admin/">Administrace</a> |
+			{% endif %}
+			<a href="/users/prefs/{{ user.id }}">Účet</a> | 
+			<a href="/logout/">Odhlásit</a>
+		
+		{% else %}
+			nepřihlášen | 
+			<a href="/login/">Přihlásit</a> | 
+			<a href="/registration/">Registrace</a>
+		{% endifnotequal %}
+		</span> 
 
-{% block content %}
-{% endblock %}
-
-
-</fieldset>
+	{% block content %}
+	{% endblock %}
+<p>Můžete se přihlásit buď na konkrétní hru (akce označené L) nebo na aktivitu, obsahující více her (akce označené A). U aktivit s více možnostmi pak získáte možnost zvolit konkrétní hry po přihlášení na akci.</p>
+<p>Z vašeho uživatelského rozhraní se můžete přihlásit na všechny aktivity pořádané naším sdružením. Každá mince má však dvě strany. Dejte si pozor na to, jestli se skutečně hlásíte na akci, kam chcete dojet, aby došlo k omylu, který by nás mrzel všechny. Věříme, že tato drobnost nezklalí radost z jednotného systému a nutnosti jediné registrace pro časy budoucí ;)</p>
+	</fieldset>
+  <p id="footer">&copy; 2008 <a href="http://www.courtofmoravia.com/">Court of Moravia, o.s.</a> | Application &copy; 2008 <a href="mailto:afri@afri.cz">Petr Müller</a></p>
 </div> 
 
 </body>
