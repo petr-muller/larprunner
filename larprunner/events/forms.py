@@ -130,10 +130,31 @@ class ApplicationForm(DynamicForm):
 
 class QuestionsForGamesForm(DynamicForm):
   def save(self, user):
+    slots = {}
     for key in self.clean_data.keys():
-      a = key.split('_')
-      a.append(self.clean_data[key])
-      print "For event %s, question %s: %s" % tuple(a)
+      slotid, question  = key.split('_')
+      answer          = self.clean_data[key]
+      if not slots.has_key(slotid):
+        slots[slotid] = []
+      else:
+        slots[slotid].append((question, answer))
+    player = Player.objects.get(user=user)
+    for slot in slots.keys():
+      slot_object   = GameInSlot.objects.get(id=slot)
+      registration  = SlotGameRegistration.objects.get(slot=slot_objects, player=player)
+      registration.answers.clear()
+
+      question = Question.objects.get(id=slots[key][0])
+      choices = ChoicesForQuestion.objects.filter(question=question)
+      if len(choices) != 0:
+        if [].__class__ != slots[slot][1].__class__:
+          slots[slot][1] = [slots[slot][1]]
+        for data in slots[slot][1]:
+          registration.answers.create(question=question,
+                                      answer=str(ChoicesForQuestion.objects.get(id=data).choice))
+      else:
+        registration.answers.create(question=question,
+                                    answer = u'%s' % slots[slot][1])
 
 class SlotAppForm(DynamicForm):
   def validate(self):
