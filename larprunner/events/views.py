@@ -34,7 +34,7 @@ def event_unapp(request, eventid):
 def event_app(request, eventid):
   event = Event.objects.get(id=eventid)
   questions_for_event = event.question.all()
-  questions_for_game = None
+  questions_for_game = []
   if event.game is not None:
     questions_for_game = event.game.questionforgame_set.all()
   fields= {}
