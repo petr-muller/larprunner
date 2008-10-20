@@ -4,6 +4,7 @@ from django.db import models
 from larprunner.questions.models import Question, Answer
 from larprunner.admin.models import Game
 from larprunner.users.models import Player
+from django.newforms.util import smart_unicode
 
 # Create your models here.
 ASTATES=(
@@ -104,6 +105,13 @@ class GameInSlot(models.Model):
   slot  = models.ForeignKey(MultiGameSlot)
   price = models.PositiveSmallIntegerField("Cena")
   note  = models.CharField("Fancy name", maxlength=256)
+
+  def asLine(self):
+    if self.note != "":
+      tmp_note = u", %s" % smart_unicode(self.note)
+    else:
+      tmp_note = u""
+    return u"%s (%s Kč)%s" % (smart_unicode(self.game.name), smart_unicode(self.price), smart_unicode(tmp_note))
 
   def isPlayerRegged(self, player):
     try:

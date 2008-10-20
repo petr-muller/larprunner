@@ -7,6 +7,7 @@ from larprunner.events.models import Registration, QuestionForEvent, SlotGameReg
 from larprunner.users.models import Player
 from larprunner.events.widgets import RadioSelectWithDisable
 from django.db.models import Q
+from django.newforms.util import smart_unicode
 
 class EventForm(forms.Form):  
   id    = forms.IntegerField(widget=forms.HiddenInput, required=False)
@@ -136,25 +137,25 @@ class QuestionsForGamesForm(DynamicForm):
       answer          = self.clean_data[key]
       if not slots.has_key(slotid):
         slots[slotid] = []
-      else:
-        slots[slotid].append((question, answer))
+      slots[slotid].append((question, answer))
     player = Player.objects.get(user=user)
     for slot in slots.keys():
       slot_object   = GameInSlot.objects.get(id=slot)
-      registration  = SlotGameRegistration.objects.get(slot=slot_objects, player=player)
+      registration  = SlotGameRegistration.objects.get(slot=slot_object, player=player)
       registration.answers.clear()
-
-      question = Question.objects.get(id=slots[key][0])
-      choices = ChoicesForQuestion.objects.filter(question=question)
-      if len(choices) != 0:
-        if [].__class__ != slots[slot][1].__class__:
-          slots[slot][1] = [slots[slot][1]]
-        for data in slots[slot][1]:
+      
+      for ans in slots[slot]:
+        question = Question.objects.get(id=ans[0])
+        choices = ChoicesForQuestion.objects.filter(question=question)
+        if len(choices) != 0:
+          if [].__class__ != ans[1].__class__:
+            ans[1] = [ans[1]]
+          for data in ans[1]:
+            registration.answers.create(question=question,
+                                        answer=str(ChoicesForQuestion.objects.get(id=data).choice))
+        else:
           registration.answers.create(question=question,
-                                      answer=str(ChoicesForQuestion.objects.get(id=data).choice))
-      else:
-        registration.answers.create(question=question,
-                                    answer = u'%s' % slots[slot][1])
+                                      answer = u'%s' % ans[1])
 
 class SlotAppForm(DynamicForm):
   def validate(self):
@@ -172,9 +173,9 @@ class SlotAppForm(DynamicForm):
       initial = -1
       for game in slot.gameinslot_set.all():
         if game.isFreeFor(player.gender):
-          choices.append([game.id, u"%s (%s Kč) %s" % (game.game.name, game.price, game.note)])
+          choices.append([game.id, game.asLine() ]  )
         else:
-          choices.append([game.id, u"%s (%s Kč) %s" % (game.game.name, game.price, game.note), u"disabled"])
+          choices.append([game.id, game.asLine(), u"disabled"])
         if SlotGameRegistration.objects.filter(player=player, slot=game).count() > 0:
           initial = game.id
 
