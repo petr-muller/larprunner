@@ -128,6 +128,13 @@ class ApplicationForm(DynamicForm):
         reg.answers.create(question=question,
                            answer = u'%s' % self.clean_data[key])
 
+class QuestionsForGamesForm(DynamicForm):
+  def save(self, user):
+    for key in self.clean_data.keys():
+      a = key.split('_')
+      a.append(self.clean_data[key])
+      print "For event %s, question %s: %s" % tuple(a)
+
 class SlotAppForm(DynamicForm):
   def validate(self):
     for field in self.fields.keys():
@@ -144,9 +151,9 @@ class SlotAppForm(DynamicForm):
       initial = -1
       for game in slot.gameinslot_set.all():
         if game.isFreeFor(player.gender):
-          choices.append([game.id, game.game.name])
+          choices.append([game.id, u"%s (%s Kč) %s" % (game.game.name, game.price, game.note)])
         else:
-          choices.append([game.id, game.game.name, u"disabled"])
+          choices.append([game.id, u"%s (%s Kč) %s" % (game.game.name, game.price, game.note), u"disabled"])
         if SlotGameRegistration.objects.filter(player=player, slot=game).count() > 0:
           initial = game.id
 

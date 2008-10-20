@@ -14,6 +14,7 @@ urlpatterns = patterns('larprunner',
   (r'^game/(?P<eventid>\d{1,3})/{0,1}$', 'events.views.event_app'),
   (r'^game/(?P<eventid>\d{1,3})/unregister/{0,1}$', 'events.views.event_unapp'),
   (r'^game/(?P<eventid>\d{1,3})/slots/{0,1}$', 'events.views.slots'),
+  (r'^game/(?P<eventid>\d{1,3})/slots_change/{0,1}$', 'events.views.slots_change'),
 
   (r'^/{0,1}$',               'events.views.mainpage'),
   (r'^admin/{0,1}$',          'admin.events_views.overview'),

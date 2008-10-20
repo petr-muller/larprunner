@@ -1,0 +1,14 @@
+{% extends "commonuiuser.html" %}
+
+{% block content %}
+
+<form action="/game/{{ eventid }}/slots_change/" method="post">
+{{ form.as_p }}
+<input type="submit" value="Odeslat" class="submit" />
+</form>
+
+<form action="/game/{{ eventid }}/slots/" method="get">
+<input type="submit" value="Zpět" />
+</form>
+
+{% endblock %}

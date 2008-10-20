@@ -4,7 +4,7 @@ from django.shortcuts import render_to_response
 from larprunner.admin.manipulation import my_login_required
 from larprunner.events.models import Event, Registration, MultiGameSlot
 from larprunner.admin.manipulation import my_login_required
-from larprunner.events.forms import ApplicationForm, SlotAppForm
+from larprunner.events.forms import ApplicationForm, SlotAppForm, QuestionsForGamesForm
 from larprunner.users.models import Player
 from django.http import HttpResponseRedirect
 
@@ -64,14 +64,42 @@ def slots(request, eventid):
   event = Event.objects.get(id=eventid)
   form = SlotAppForm()
   form.loadFromEvent(event,Player.objects.get(user=request.user))
-
   if request.method == "POST":
     form.setData(request.POST)
     form.validate()
     if form.is_valid():
       form.save(event, request.user)
-      return HttpResponseRedirect(u"/")
+      return HttpResponseRedirect(u"/game/%s/slots_change/" % eventid)
   return render_to_response(u"events/slots_app.html",
                             {u'user' : request.user,
                              u'eventid' : eventid,
                              u'form' : form })
+
+def slots_change(request, eventid):
+  event = Event.objects.get(id=eventid)
+  player = Player.objects.get(user=request.user)
+
+  games_applied = event.getGamesForPlayer(player)
+  if len(games_applied) == 0:
+    return HttpResponseRedirect(u"/")
+  print games_applied
+  fields = {}
+  for game in games_applied:
+    for question in game.game.questionforgame_set.all():
+      fields["%s_%s" % (game.id, question.question.id)] = question.asField()
+      fields["%s_%s" % (game.id, question.question.id)].label = u"Otázka ke hře %s: %s" % (game.game.name,
+                                                                          fields["%s_%s" % (game.id, question.question.id)].label)
+
+  form = QuestionsForGamesForm()
+  form.setFields(fields)
+  if request.method == "POST":
+    form.setData(request.POST)
+    form.validate("gheee")
+    if form.is_valid():
+      form.save(request.user)
+      return HttpResponseRedirect(u"/")
+  print form
+  return render_to_response("events/que_for_games.html",
+                            {u"user"    : request.user,
+                             u"form"    : form,
+                             u"eventid" : eventid})

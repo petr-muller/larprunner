@@ -70,6 +70,15 @@ class Event(models.Model):
       for game in slot.gameinslot_set.all():
         SlotGameRegistration.objects.filter(player=player, slot=game).delete()
 
+  def getGamesForPlayer(self, player):
+    games = []
+    for slot in self.multigameslot_set.all():
+      games.append(slot.getGameForPlayer(player))
+
+    while None in games:
+      games.remove(None)
+    return games
+
 class MultiGameSlot(models.Model):
   name = models.CharField("Název", maxlength=50)
   start = models.DateTimeField("Začátek")
@@ -83,11 +92,25 @@ class MultiGameSlot(models.Model):
     for game in self.games_to_print:
       game.printify()
 
+  def getGameForPlayer(self, player):
+    for game in self.gameinslot_set.all():
+      if game.isPlayerRegged(player):
+        return game
+
+    return None
+
 class GameInSlot(models.Model):
   game  = models.ForeignKey(Game)
   slot  = models.ForeignKey(MultiGameSlot)
   price = models.PositiveSmallIntegerField("Cena")
   note  = models.CharField("Fancy name", maxlength=256)
+
+  def isPlayerRegged(self, player):
+    try:
+      self.slotgameregistration_set.get(player=player)
+      return True
+    except SlotGameRegistration.DoesNotExist:
+      return False
 
   def printify(self):
     self.regs = SlotGameRegistration.objects.filter(slot=self)
@@ -111,5 +134,6 @@ class Registration(models.Model):
   answers = models.ManyToManyField(Answer, null=True)
 
 class SlotGameRegistration(models.Model):
-  player = models.ForeignKey(Player)
-  slot   = models.ForeignKey(GameInSlot)
+  player  = models.ForeignKey(Player)
+  slot    = models.ForeignKey(GameInSlot)
+  answers = models.ManyToManyField(Answer, null=True)
