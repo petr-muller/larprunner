@@ -209,8 +209,12 @@ def delete_game_from_slot(request, eventid, slotid, gameid):
 @my_admin_required
 def slot_details(request, eventid, slotid):
   game = GameInSlot.objects.get(id=slotid)
+  regs = SlotGameRegistration.objects.filter(game=game).order_by("player")
+  people = [ reg.player for reg in regs ]
+  people.sort(lambda x,y: cmp(x.surname, y.surname))
   return render_to_response("admin/slot_details.html",
                             {"menuitems"      : createMenuItems(),
                              'title'          : "Detaily slotu",
                              'user'           : request.user,
-                             'game'           : game})
+                             'game'           : game,
+                             'regs'           : regs})

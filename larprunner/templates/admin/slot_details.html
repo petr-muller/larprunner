@@ -1,6 +1,14 @@
 {% extends "commonui.html" %}
-{% block content %}    
-    {{ game.id }}
+{% block content %}
+<table>
+ {% for reg in regs %}
+ <tr>
+ <td>{{reg.player.name}}, {{reg.player.surname}} ({{reg.player.nick}})</td>
+ </tr>
+ {% endfor %}
+ </table>
+  
+    
 {% endblock %}
 
 
