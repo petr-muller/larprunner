@@ -23,6 +23,7 @@ def administrate_games(request):
 
 @my_admin_required
 def game_modify(request, gameid=None, qmod=False):
+  question_form = None 
   if gameid == "new":
     GameForm = form_for_model(Game)
   else:
