@@ -72,7 +72,7 @@ def register(request, success_url=None,
             # a default value using reverse() will cause circular-import
             # problems with the default URLConf for this application, which
             # imports this file.
-            return HttpResponseRedirect('/')
+            return render_to_response('users/reg_success.html')
     else:
         form = form_class()
     
