@@ -1,21 +1,20 @@
 {% extends "commonui.html" %}
-{% block content %}    
+{% block content %}
+<form action="/admin/events/multi/{{eventid}}/people_action_slot/" method="post">
     <table>
-    
     {% for slot in slots %}
     <tr>
     <td>{{slot.name}}</td>
     </tr>
     <tr>
-    
     {% for game in slot.games_to_print %}
-    
     <td>
     	<table>
     	<tr><a href="/admin/events/multi/{{eventid}}/slot_details/{{game.id}}/">{{game.game.name}}</a></tr>
     	{% for reg in game.regs %}
     	<tr>
     		<td style="background : {% ifequal reg.player.gender "Male" %} #CCEEFF {% else %} #FF9999 {% endifequal %};">
+				<input type="checkbox" name="sr{{reg.id}}">
     			{{ reg.player.name }} {{ reg.player.surname }} 
     			{% if reg.player.nick %}
     			({{reg.player.nick}})
@@ -23,16 +22,14 @@
     		</td>
     	</tr>
     	{% endfor %}
-    	
+
     	</table>
-    
     </td>
-    
     {% endfor %}
-   
     </tr>
 	{% endfor %}
-    </table>    
+    </table>
+    <input type="submit" name="unregister" value="Odhlásit">
+    <input type="submit" name="unregister_with_mail" value="Odhlásit se zprávou">
+</form>
 {% endblock %}
-
-

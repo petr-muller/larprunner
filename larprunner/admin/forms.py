@@ -1,3 +1,4 @@
+# encoding: utf-8
 from django import newforms as forms
 from models import Game, QuestionForGame
 from larprunner.events.forms import DynamicForm
@@ -14,6 +15,16 @@ class SlotForm(forms.Form):
   slot  = forms.CharField()
   price = forms.IntegerField()
   note  = forms.CharField(required=False)
+
+class ThrowOutForm(DynamicForm):
+  mail = forms.CharField(widget=forms.Textarea)
+  def load(self, sgrs):
+    for reg in sgrs:
+      self.fields["sr%s" % reg.id] = forms.BooleanField(widget=forms.CheckboxInput,
+                                                        label=u"Hráč %s, slot %s, hra %s" % (reg.player.name + " " + reg.player.surname,
+                                                                                             reg.slot.slot.name,
+                                                                                             reg.slot.game.name))
+      self.fields["sr%s" % reg.id].initial=True
 
 class QuestionForm(DynamicForm):
   def save(self, gameid):

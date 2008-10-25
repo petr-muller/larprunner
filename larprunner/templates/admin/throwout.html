@@ -1,0 +1,8 @@
+{% extends "commonui.html" %}
+
+{% block content %}
+<form action="/admin/events/multi/{{ eventid }}/people_action_slot/" method="POST">
+{{ form.as_p }}
+<input type="submit" name="unregister_and_send_mails" value="Odhlásit">
+</form>
+{% endblock %}

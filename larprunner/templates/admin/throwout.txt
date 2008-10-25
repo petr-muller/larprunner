@@ -1,0 +1,8 @@
+Dobrý den,
+
+administrátor Vás odhlásil z následujících her:
+{% for line in games %}
+{{ line }}
+{% endfor %}
+se zprávou:
+{{ message }}

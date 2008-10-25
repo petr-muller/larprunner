@@ -1,16 +1,19 @@
 # This Python file uses the following encoding: utf-8
 from django.contrib.auth import authenticate, login
+from django.db.models import Q
 from django.http import HttpResponseRedirect
 from django.newforms import form_for_instance, form_for_model, BooleanField
 from django.newforms.widgets import Textarea, TextInput, Select, HiddenInput, CheckboxInput
 from django.shortcuts import render_to_response
 from django.template import RequestContext
-from forms import SlotForm
+from forms import SlotForm, ThrowOutForm
 from larprunner.events.forms import RegistrationForm, SingleEventForm, MultiEventForm
 from larprunner.events.models import Event, MultiGameSlot, GameInSlot, Registration, SlotGameRegistration
+from larprunner.questions.models import Question
 from manipulation import my_login_required, createMenuItems, my_admin_required
 from models import Game, Log
-from larprunner.questions.models import Question
+from django.template.loader import render_to_string
+from django.conf import settings
 
 @my_admin_required
 def overview(request):
@@ -229,3 +232,55 @@ def slot_details(request, eventid, slotid):
                              'game'           : game,
                              'rows'           : rows,
                              'headlines'      : headlines})
+
+@my_admin_required
+def slotregistration_action(request, eventid=None):
+  ids = []
+  print request.POST
+  for key in request.POST.keys():
+    if key[:2] == "sr":
+      try:
+        ids.append(int(key[2:]))
+      except ValueError:
+        pass
+
+  filterer = Q(id=None)
+  for id in ids:
+    filterer = filterer | Q(id=id)
+
+  affected_sgrs = SlotGameRegistration.objects.filter(filterer)
+  if len(affected_sgrs) == 0:
+    return HttpResponseRedirect('/admin/events/multi/%s/people_at_slots/' % eventid)
+
+  if 'unregister_with_mail' in request.POST.keys():
+    form = ThrowOutForm()
+    form.load(affected_sgrs)
+    return render_to_response("admin/throwout.html",
+                              {'form': form,
+                               "menuitems"      : createMenuItems(),
+                               'title'          : "Odhlášení účastníků",
+                               'eventid'        : eventid,
+                              })
+  elif 'unregister_and_send_mails' in request.POST.keys():
+    lists = {}
+    for reg in affected_sgrs:
+      email = reg.player.user.email
+      if not lists.has_key(email):
+        lists[email] = []
+      lists[email].append("Akce %s, slot %s, hra %s" % (reg.slot.slot.event.name,
+                                                       reg.slot.slot.name,
+                                                       reg.slot.game.name))
+
+    for mail in lists.keys():
+      message = render_to_string('admin/throwout.txt',
+                                 {'message' : request.POST['mail'],
+                                  'games' : lists[mail]})
+      from django.core.mail import send_mail
+      subject = "%s - odhlášení z her" % settings.SITE_NAME
+      subject = ''.join(subject.splitlines())
+      send_mail(subject, message, settings.DEFAULT_FROM_EMAIL, [email])
+
+    affected_sgrs.delete()
+  elif 'unregister' in request.POST.keys():
+    affected_sgrs.delete()
+  return HttpResponseRedirect('/admin/events/multi/%s/people_at_slots/' % eventid)
