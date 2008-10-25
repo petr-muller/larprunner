@@ -34,8 +34,18 @@ class Event(models.Model):
   game  = models.ForeignKey(Game, null=True)
   state   = models.CharField("Stav", maxlength=10, choices=ASTATES, default="CREATED")
   question = models.ManyToManyField(QuestionForEvent, null=True)
+  information_url = models.URLField(u"Informace o akci", blank=True)
+
   def __str__(self):
     return self.name
+
+  def setTempUrl(self):
+    if self.information_url:
+      self.tmpurl = self.information_url
+    elif self.game:
+      self.tmpurl = self.game.getUrl()
+    else:
+      self.tmpurl = None
 
   def check_free_place(self,player_gender):
     if self.game:

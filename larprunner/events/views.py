@@ -7,17 +7,20 @@ from larprunner.admin.manipulation import my_login_required
 from larprunner.events.forms import ApplicationForm, SlotAppForm, QuestionsForGamesForm
 from larprunner.users.models import Player
 from django.http import HttpResponseRedirect
+from django.db.models import Q
 
 @my_login_required
 def mainpage(request):
   if request.user.is_authenticated():
     user = request.user
-    games = Event.objects.exclude(state="CREATED")
+    games = Event.objects.filter(Q(state="OPEN") | Q(state="CLOSED"))
     player = Player.objects.get(user=request.user)
 
     for game in games:
       game.check_free_place(player.gender)
       game.check_regged(player)
+      game.setTempUrl()
+
   return render_to_response("events/mainpage.html",
                             {'user' : user,
                              'games': games,

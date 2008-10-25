@@ -11,15 +11,17 @@ from django.newforms.util import smart_unicode
 
 class EventForm(forms.Form):  
   id    = forms.IntegerField(widget=forms.HiddenInput, required=False)
-  name  = forms.CharField(max_length=50)
-  type  = forms.CharField(widget=forms.HiddenInput, max_length=10)
+  name  = forms.CharField(max_length=50, label=u"Název")
+  type  = forms.CharField(widget=forms.HiddenInput, max_length=10, label=u"Typ")
   fluff = forms.CharField(widget=forms.Textarea(attrs={'rows' : 10,
-                                                       'cols' : 40}))
-  start = forms.DateTimeField()  
-  end   = forms.DateTimeField()
-  game  = forms.ModelChoiceField(Game.objects.all(), required=True)
-  state = forms.ChoiceField(choices=ASTATES)
-  
+                                                       'cols' : 40}),
+                          label=u"Popis")
+  start = forms.DateTimeField(label=u'Začátek')
+  end   = forms.DateTimeField(label=u'Konec')
+  game  = forms.ModelChoiceField(Game.objects.all(), required=True, label=u'Hra')
+  state = forms.ChoiceField(choices=ASTATES, label=u'Stav')
+  url   = forms.URLField(label=u'Informace o akci', verify_exists=True)
+
   def loadValues(self, event):    
     self.initial["id"] = event.id
     self.initial["type"] = event.type
@@ -30,7 +32,8 @@ class EventForm(forms.Form):
     if event.game is not None:
       self.initial["game"] = event.game.id
     self.initial["state"] = event.state
-  
+    self.initial["url"] = event.information_url
+
   def getGame(self, id):
     return Game.objects.get(id=self.data["game"])
 
@@ -42,7 +45,8 @@ class EventForm(forms.Form):
                                    end  =self.data["end"],
                                    start=self.data["start"],
                                    game=self.getGame(self.data["game"]),
-                                   state = self.data["state"]
+                                   state = self.data["state"],
+                                   information_url = self.data["url"]
                                    )
     else:
       event = Event.objects.get(id=self.data["id"])
@@ -53,6 +57,7 @@ class EventForm(forms.Form):
       event.end   = self.data["end"]
       event.game=self.getGame(self.data["game"])
       event.state = self.data["state"]
+      event.information_url = self.data["url"]
     event.save()
 
   def validate(self):

@@ -15,7 +15,12 @@
   {% endifequal %}
 </td>
 <td>
+{% if game.tmpurl %}
+<a href="{{game.tmpurl}}">{{ game.name }}</a>
+{% else %}
 {{ game.name }}
+{% endif %}
+
 </td>
 <td> 
   {% ifequal game.state "OPEN"%}
