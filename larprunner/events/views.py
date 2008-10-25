@@ -91,13 +91,14 @@ def slots_change(request, eventid):
   games_applied = event.getGamesForPlayer(player)
   if len(games_applied) == 0:
     return HttpResponseRedirect(u"/")
-  print games_applied
   fields = {}
   for game in games_applied:
     for question in game.game.questionforgame_set.all():
       fields["%s_%s" % (game.id, question.question.id)] = question.asField()
       fields["%s_%s" % (game.id, question.question.id)].label = u"Otázka ke hře %s: %s" % (game.game.name,
                                                                           fields["%s_%s" % (game.id, question.question.id)].label)
+  if len(fields) == 0:
+    return HttpResponseRedirect(u"/")
 
   form = QuestionsForGamesForm()
   form.setFields(fields)

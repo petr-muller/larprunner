@@ -175,6 +175,7 @@ class PreferencesForm(RegistrationForm):
     player.year_of_birth     = self.clean_data["year_of_birth"]
     player.phone    = self.clean_data["phone"]
     player.gender   = self.clean_data["gender"]
+    player.nick     = self.clean_data["nick"]
     if self.clean_data["password1"] and self.clean_data["password2"]:
       player.user.set_password(self.clean_data["password1"])
     player.save()
