@@ -6,7 +6,7 @@
 <legend>Hry</legend>
 <table>
 {% for game in games %}
-<tr>
+<tr class="{{game.evenity}}_row">
 <td>
 {% ifequal game.type "multi" %}
   	<img src="/media/aicon.png">

@@ -16,10 +16,16 @@ def mainpage(request):
     games = Event.objects.filter(Q(state="OPEN") | Q(state="CLOSED"))
     player = Player.objects.get(user=request.user)
 
+    order = "odd"
     for game in games:
       game.check_free_place(player.gender)
       game.check_regged(player)
       game.setTempUrl()
+      game.evenity = order
+      if order == "odd":
+        order = "even"
+      else:
+        order = "odd"
 
   return render_to_response("events/mainpage.html",
                             {'user' : user,
