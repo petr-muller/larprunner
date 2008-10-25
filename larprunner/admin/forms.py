@@ -3,6 +3,7 @@ from django import newforms as forms
 from models import Game, QuestionForGame
 from larprunner.events.forms import DynamicForm
 from larprunner.questions.models import Question
+from django.newforms.util import smart_unicode
 
 class SlotForm(forms.Form):
   def __init__(self, slotid, *args, **kwargs):
@@ -21,9 +22,9 @@ class ThrowOutForm(DynamicForm):
   def load(self, sgrs):
     for reg in sgrs:
       self.fields["sr%s" % reg.id] = forms.BooleanField(widget=forms.CheckboxInput,
-                                                        label=u"Hráč %s, slot %s, hra %s" % (reg.player.name + " " + reg.player.surname,
-                                                                                             reg.slot.slot.name,
-                                                                                             reg.slot.game.name))
+                                                        label=u"Hráč %s, slot %s, hra %s" % (smart_unicode(reg.player.name) + " " + smart_unicode(reg.player.surname),
+                                                                                             smart_unicode(reg.slot.slot.name),
+                                                                                             smart_unicode(reg.slot.game.name)))
       self.fields["sr%s" % reg.id].initial=True
 
 class QuestionForm(DynamicForm):
