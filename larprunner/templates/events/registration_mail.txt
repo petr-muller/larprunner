@@ -1,0 +1,6 @@
+Dobrý den,
+
+pro akci {{ event.name }} máte registrovány následující hry:
+{% for slot in slots %}
+{{ slot.name }}: {% if slot.appliedfor %} {{ slot.appliedfor.game }} {% else %} -nic- {% endif %}
+{% endfor %}

@@ -5,6 +5,8 @@ from larprunner.questions.models import Question, Answer
 from larprunner.admin.models import Game
 from larprunner.users.models import Player
 from django.newforms.util import smart_unicode
+from django.template.loader import render_to_string
+from django.conf import settings
 
 # Create your models here.
 ASTATES=(
@@ -89,6 +91,23 @@ class Event(models.Model):
     while None in games:
       games.remove(None)
     return games
+
+  def mailToPlayer(self, player):
+    from django.core.mail import send_mail
+    subject = render_to_string('events/registration_subject.txt',
+                              { 'SITE_NAME': settings.SITE_NAME,
+                                'event'    : self })
+    subject = ''.join(subject.splitlines())
+    slots = self.multigameslot_set.all()
+    for slot in slots:
+      slot.appliedfor = slot.getGameForPlayer(player)
+
+    message = render_to_string('events/registration_mail.txt',
+                              { 'SITE_URL'  : settings.SITE_URL,
+                                'SITE_NAME' : settings.SITE_NAME,
+                                'slots'     : slots,
+                                'event'     : self})
+    send_mail(subject, message, settings.DEFAULT_FROM_EMAIL, [player.user.email])
 
 class MultiGameSlot(models.Model):
   name = models.CharField("Název", maxlength=50)

@@ -87,10 +87,11 @@ def slots(request, eventid):
 def slots_change(request, eventid):
   event = Event.objects.get(id=eventid)
   player = Player.objects.get(user=request.user)
-
+  event.mailToPlayer(player)
   games_applied = event.getGamesForPlayer(player)
   if len(games_applied) == 0:
     return HttpResponseRedirect(u"/")
+
   fields = {}
   for game in games_applied:
     for question in game.game.questionforgame_set.all():
