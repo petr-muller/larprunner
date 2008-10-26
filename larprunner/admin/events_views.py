@@ -138,7 +138,6 @@ def slot_modify(request, eventid, slotid=None):
 def add_game_to_slot(request, eventid="", slotid=""):
   if request.method == "POST":
     form = SlotForm(slotid, request.POST)
-    print form
 
     if form.is_valid():
       tmp = GameInSlot(game=Game.objects.get(id=int(form.clean_data['games'])),
@@ -236,7 +235,6 @@ def slot_details(request, eventid, slotid):
 @my_admin_required
 def slotregistration_action(request, eventid=None):
   ids = []
-  print request.POST
   for key in request.POST.keys():
     if key[:2] == "sr":
       try:

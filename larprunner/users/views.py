@@ -80,7 +80,6 @@ def register(request, success_url=None,
 
 def preferences(request, userid):
   form = PreferencesForm()
-  print form.fields["password1"].required
   if request.method == 'POST':
     form = PreferencesForm(request.POST)
     form.fields["password1"].required = False

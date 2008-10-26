@@ -8,6 +8,41 @@ from larprunner.events.forms import ApplicationForm, SlotAppForm, QuestionsForGa
 from larprunner.users.models import Player
 from django.http import HttpResponseRedirect
 from django.db.models import Q
+from django.db import transaction
+from django.template import RequestContext
+from django.newforms.util import smart_unicode
+
+@my_login_required
+def triage_messages(request):
+  messages = request.user.get_and_delete_messages()
+  transaction.commit()
+  errors = []
+  notif = []
+
+  for message in messages:
+    if message[:2] == u"1|":
+      errors.append(message[2:])
+    elif message[:2] == u"0|":
+      notif.append(message[2:])
+
+  if len(notif) == 0:
+    notif=None
+  if len(errors) == 0:
+    errors=None
+
+  return (notif, errors)
+
+@my_login_required
+def add_error_message(request, message):
+  request.user.message_set.create(message=u"1|"+smart_unicode(message))
+  request.user.save()
+  transaction.commit()
+
+@my_login_required
+def add_notif_message(request, message):
+  request.user.message_set.create(message=u"0|"+smart_unicode(message))
+  request.user.save()
+  transaction.commit()
 
 @my_login_required
 def mainpage(request):
@@ -69,6 +104,7 @@ def event_app(request, eventid):
                              'eventid'  : eventid,
                              })
 
+@transaction.commit_manually
 def slots(request, eventid):
   event = Event.objects.get(id=eventid)
   form = SlotAppForm()
@@ -77,12 +113,24 @@ def slots(request, eventid):
     form.setData(request.POST)
     form.validate()
     if form.is_valid():
-      form.save(event, request.user)
-      return HttpResponseRedirect(u"/game/%s/slots_change/" % eventid)
+      if form.save(event, request.user):
+        transaction.commit()
+        return HttpResponseRedirect(u"/game/%s/slots_change/" % eventid)
+      else:
+        transaction.rollback()
+        form = SlotAppForm()
+        form.loadFromEvent(event,Player.objects.get(user=request.user))
+        add_error_message(request, message=u"Omlouváme se, došlo k souběhu a během vyplňování formuláře se některé hry zaplnily. Formulář teď zobrazuje aktuální stav.")
+  transaction.commit()
+
+  notif_messages, error_messages = triage_messages(request)
   return render_to_response(u"events/slots_app.html",
                             {u'user' : request.user,
                              u'eventid' : eventid,
-                             u'form' : form })
+                             u'form' : form,
+                             u'notif_messages' : notif_messages,
+                             u'error_messages' : error_messages}
+                             )
 
 def slots_change(request, eventid):
   event = Event.objects.get(id=eventid)
@@ -109,7 +157,6 @@ def slots_change(request, eventid):
     if form.is_valid():
       form.save(request.user)
       return HttpResponseRedirect(u"/")
-  print form
   return render_to_response("events/que_for_games.html",
                             {u"user"    : request.user,
                              u"form"    : form,

@@ -8,6 +8,25 @@
 
 	<body>
 
+	{% if error_messages %}
+	<div id="error_frame">
+	<ul>
+	{% for message in error_messages %}
+    <li>{{ message }}</li>
+    {% endfor %}
+	</ul>
+	</div>
+	{% endif %}
+
+	{% if notif_messages %}
+	<div id="notif_frame">
+	<ul>
+	{% for message in notif_messages %}
+    <li>{{ message }}</li>
+    {% endfor %}
+	</ul>
+	</div>
+	{% endif %}
 		<div id="wrapper">
 			<fieldset>
 				<legend>larp-runner</legend>

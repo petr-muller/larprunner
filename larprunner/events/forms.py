@@ -200,6 +200,10 @@ class SlotAppForm(DynamicForm):
         for reg in MultiGameSlot.objects.get(id=key).gameinslot_set.all():
           reg.slotgameregistration_set.filter(player=player).delete()
         if self.clean_data[key] != "-1":
-          sgr = SlotGameRegistration.objects.create(player=player,
-                                                  slot=GameInSlot(id=self.clean_data[key]))
+          slot = GameInSlot.objects.get(id=self.clean_data[key])
+          if slot.isFreeFor(player.gender):
+            sgr = SlotGameRegistration.objects.create(player=player, slot=slot)
+          else:
+            return False
           sgr.save()
+    return True
