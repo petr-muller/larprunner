@@ -138,6 +138,7 @@ def slots_change(request, eventid):
   event.mailToPlayer(player)
   games_applied = event.getGamesForPlayer(player)
   if len(games_applied) == 0:
+    add_notif_message(request, u"%s: nejste přihlášen na žádnou hru" % smart_unicode(event.name) )
     return HttpResponseRedirect(u"/")
 
   fields = {}
@@ -147,6 +148,7 @@ def slots_change(request, eventid):
       fields["%s_%s" % (game.id, question.question.id)].label = u"Otázka ke hře %s: %s" % (game.game.name,
                                                                           fields["%s_%s" % (game.id, question.question.id)].label)
   if len(fields) == 0:
+    add_notif_message(request, u"%s: registrace na jednotlivé hry byla přijata" % smart_unicode(event.name) )
     return HttpResponseRedirect(u"/")
 
   form = QuestionsForGamesForm()
