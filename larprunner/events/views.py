@@ -70,7 +70,8 @@ def event_unapp(request, eventid):
   event = Event.objects.get(id=eventid)
   player = Player.objects.get(user=request.user)
   event.unregister(player)
-
+  add_notif_message(request, u"%s: odhlášeno" % smart_unicode(event.name) )
+  
   return HttpResponseRedirect("/")
 
 @my_login_required
@@ -95,6 +96,7 @@ def event_app(request, eventid):
     form.validate(request.POST)
     if form.is_valid():
       form.save(eventid, request.user)
+      add_notif_message(request, u"%s: přihláška přijata" % smart_unicode(event.name) )
       return HttpResponseRedirect("/")
 
   return render_to_response("events/game_app.html",
