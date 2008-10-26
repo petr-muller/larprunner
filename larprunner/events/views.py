@@ -157,7 +157,7 @@ def slots_change(request, eventid):
     form.setData(request.POST)
     form.validate("gheee")
     if form.is_valid():
-      add_notif_message(request, u"%s: registrace na jednotlivé hry byla přijata" % event.name )
+      add_notif_message(request, u"%s: registrace na jednotlivé hry byla přijata" % smart_unicode(event.name) )
       form.save(request.user)
       return HttpResponseRedirect(u"/")
   return render_to_response("events/que_for_games.html",
