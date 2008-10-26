@@ -61,10 +61,12 @@ def mainpage(request):
         order = "even"
       else:
         order = "odd"
-
+  notif_messages, error_messages = triage_messages(request)
   return render_to_response("events/mainpage.html",
                             {'user' : user,
                              'games': games,
+                             'notif_messages' : notif_messages,
+                             'error_messages' : error_messages,
                              })
 @my_login_required
 def event_unapp(request, eventid):
@@ -155,6 +157,7 @@ def slots_change(request, eventid):
     form.setData(request.POST)
     form.validate("gheee")
     if form.is_valid():
+      add_notif_message(request, u"%s: registrace na jednotlivé hry byla přijata" % event.name )
       form.save(request.user)
       return HttpResponseRedirect(u"/")
   return render_to_response("events/que_for_games.html",
