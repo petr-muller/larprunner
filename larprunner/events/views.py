@@ -15,7 +15,6 @@ from django.newforms.util import smart_unicode
 @my_login_required
 def triage_messages(request):
   messages = request.user.get_and_delete_messages()
-  transaction.commit()
   errors = []
   notif = []
 
@@ -36,13 +35,11 @@ def triage_messages(request):
 def add_error_message(request, message):
   request.user.message_set.create(message=u"1|"+smart_unicode(message))
   request.user.save()
-  transaction.commit()
 
 @my_login_required
 def add_notif_message(request, message):
   request.user.message_set.create(message=u"0|"+smart_unicode(message))
   request.user.save()
-  transaction.commit()
 
 @my_login_required
 def mainpage(request):
@@ -126,6 +123,7 @@ def slots(request, eventid):
   transaction.commit()
 
   notif_messages, error_messages = triage_messages(request)
+  transaction.commit()
   return render_to_response(u"events/slots_app.html",
                             {u'user' : request.user,
                              u'eventid' : eventid,
