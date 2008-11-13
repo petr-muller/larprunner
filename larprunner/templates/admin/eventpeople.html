@@ -1,23 +1,23 @@
 {% extends "commonui.html" %}
-{% block content %}    
+{% block content %}
+	{% ifequal event.type "multi" %}
+		<p>Zobrazení: <a href="/admin/events/multi/{{event.id}}/people/">Bez slotů</a>
+				   <a href="/admin/events/multi/{{event.id}}/people/wslots/">Se sloty</a>
+	{% endifequal %}
     <table>
 	<tr>
 	{% for head in headers %}
 	<td>{{ head }}</td>
 	{% endfor %}
 	</tr>
-	
 	{% for row in cells %}
 	<tr>
 		{% for col in row %}
 			<td>{{ col }}</td>
-		{% endfor %}	
+		{% endfor %}
 	</tr>
 	{% endfor %}
-					
-	
-    
-    </table>    
+    </table>
 {% endblock %}
 
 

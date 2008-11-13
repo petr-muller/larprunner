@@ -152,7 +152,7 @@ def add_game_to_slot(request, eventid="", slotid=""):
     return HttpResponseRedirect('/admin/events/multi/%s/slots/%s/' % (eventid, slotid))
 
 @my_admin_required
-def show_applied_people(request, eventid):
+def show_applied_people(request, eventid, slotted=False):
   event = Event.objects.get(id=eventid)
   regs = Registration.objects.filter(event=event).order_by("player")
   people = [ reg.player for reg in regs ]
@@ -161,6 +161,11 @@ def show_applied_people(request, eventid):
   headlines = [ "Jméno", "Telefon", "Email", "Rok narození"] + [ que.question.uniq_name for que in event.question.all() ]
   if event.game is not None:
     headlines.extend([ que.question.uniq_name for que in event.game.questionforgame_set.all() ])
+  if slotted and event.type == "multi":
+    slots = MultiGameSlot.objects.filter(event=event)
+    headlines.extend([ slot.name for slot in slots ])
+  else:
+    slots=[]
   cells = []
   for player in people:
     row   = [ "%s, %s (%s)" %  (player.surname, player.name, player.nick) ]
@@ -173,6 +178,12 @@ def show_applied_people(request, eventid):
       for question in [ que.question for que in event.game.questionforgame_set.all()]:
         answers = reg.answers.filter(question=question)
         row += [ ",".join( [ ans.answer for ans in answers ]) ]
+    for slot in slots:
+      game = slot.getGameForPlayer(player)
+      if game:
+        row.append(game.game.name)
+      else:
+        row.append("--nic---")
     cells.append(row)
 
   return render_to_response('admin/eventpeople.html',
@@ -180,7 +191,8 @@ def show_applied_people(request, eventid):
                                'title'        : "Lidé přihlášení na %s" % event.name,
                                'user'         : request.user,
                                'cells'        : cells,
-                               'headers'      : headlines},
+                               'headers'      : headlines,
+                               'event'        : event},
                               )
 
 @my_admin_required

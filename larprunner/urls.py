@@ -33,7 +33,7 @@ urlpatterns = patterns('larprunner',
   (r'^admin/events/(?P<type>(single|multi))/(?P<eventid>(new)|(\d{1,3}))/{0,1}$', 'admin.events_views.modify'),
   (r'^admin/events/(single|multi)/(?P<eventid>\d{1,3})/people/{0,1}$', 'admin.events_views.show_applied_people'),
   (r'^admin/events/(?P<type>(single|multi))/(?P<eventid>\d{1,3})/regcreate/{0,1}$', 'admin.events_views.modify', {'regcreate' : True}),
-    
+  (r'^admin/events/multi/(?P<eventid>\d{1,3})/people/wslots/{0,1}$', 'admin.events_views.show_applied_people', {'slotted' : True}),
   (r'^admin/events/multi/(?P<eventid>\d{1,3})/slots/(?P<slotid>(new)|(\d{1,3}))/{0,1}$', 'admin.events_views.slot_modify'),
   (r'^admin/events/multi/(?P<eventid>\d{1,3})/slots/(?P<slotid>\d{1,3})/add/{0,1}$', 'admin.events_views.add_game_to_slot'),
   (r'^admin/events/multi/(?P<eventid>\d{1,3})/slots/(?P<slotid>\d{1,3})/delete/{0,1}$', 'admin.events_views.delete_slot'),
