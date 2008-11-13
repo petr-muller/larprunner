@@ -1,9 +1,11 @@
 {% extends "commonui.html" %}
 {% block content %}
+	<p>
 	{% ifequal event.type "multi" %}
-		<p>Zobrazení: <a href="/admin/events/multi/{{event.id}}/people/">Bez slotů</a>
+		Zobrazení: <a href="/admin/events/multi/{{event.id}}/people/">Bez slotů</a>
 				   <a href="/admin/events/multi/{{event.id}}/people/wslots/">Se sloty</a>
 	{% endifequal %}
+	<a href="./cvsexport/">Exportovat do CSV</a>
     <table>
 	<tr>
 	{% for head in headers %}

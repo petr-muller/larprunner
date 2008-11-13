@@ -14,6 +14,7 @@ from manipulation import my_login_required, createMenuItems, my_admin_required
 from models import Game, Log
 from django.template.loader import render_to_string
 from django.conf import settings
+from django.http import HttpResponse
 
 @my_admin_required
 def overview(request):
@@ -152,7 +153,7 @@ def add_game_to_slot(request, eventid="", slotid=""):
     return HttpResponseRedirect('/admin/events/multi/%s/slots/%s/' % (eventid, slotid))
 
 @my_admin_required
-def show_applied_people(request, eventid, slotted=False):
+def show_applied_people(request, eventid, slotted=False, cvsexport=False):
   event = Event.objects.get(id=eventid)
   regs = Registration.objects.filter(event=event).order_by("player")
   people = [ reg.player for reg in regs ]
@@ -185,6 +186,11 @@ def show_applied_people(request, eventid, slotted=False):
       else:
         row.append("--nic---")
     cells.append(row)
+  
+  if cvsexport:
+    cells = [headlines] + cells
+    print cells
+    return HttpResponse("\n".join([",".join([ '"%s"' % str(elm) for elm in row]) for row in cells ]), mimetype="text/plain")
 
   return render_to_response('admin/eventpeople.html',
                               {'menuitems'    : createMenuItems(),
