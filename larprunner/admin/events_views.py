@@ -230,12 +230,12 @@ def delete_game_from_slot(request, eventid, slotid, gameid):
 def slot_details(request, eventid, slotid):
   game = GameInSlot.objects.get(id=slotid)
   regs = SlotGameRegistration.objects.filter(slot=game).order_by("player")
-  headlines = [ "Jméno"] + [ que.question.uniq_name for que in game.game.questionforgame_set.all() ]
+  headlines = [ "Jméno", "Telefon" ] + [ que.question.uniq_name for que in game.game.questionforgame_set.all() ]
   people = [ reg.player for reg in regs ]
   people.sort(lambda x,y: cmp(x.surname, y.surname))
   rows = []
   for person in people:
-    cols = [ person.name + person.surname + "(" + person.nick + ")" ]
+    cols = [ person.name + " " + person.surname + " (" + person.nick + ")", person.phone ]
     registration = SlotGameRegistration.objects.get(slot=game, player=person)
     for question in game.game.questionforgame_set.all():
       answers = registration.answers.filter(question=question.question)
