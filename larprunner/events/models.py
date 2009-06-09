@@ -4,7 +4,7 @@ from django.db import models
 from larprunner.questions.models import Question, Answer
 from larprunner.admin.models import Game
 from larprunner.users.models import Player
-from django.newforms.util import smart_unicode
+from django.forms.util import smart_unicode
 from django.template.loader import render_to_string
 from django.conf import settings
 

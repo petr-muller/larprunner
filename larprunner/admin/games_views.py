@@ -4,12 +4,12 @@ from django.shortcuts import render_to_response
 from django.contrib.auth import authenticate, login
 from manipulation import my_login_required, createMenuItems, my_admin_required
 from models import Game, Log, QuestionForGame
-from django.newforms import form_for_instance, form_for_model
-from django.newforms import ChoiceField, BooleanField
+from django.forms import form_for_instance, form_for_model
+from django.forms import ChoiceField, BooleanField
 from django.template import RequestContext
 from forms import SlotForm, QuestionForm
 from larprunner.questions.models import Question
-from django.newforms.widgets import CheckboxInput
+from django.forms.widgets import CheckboxInput
 
 @my_admin_required
 def administrate_games(request):
