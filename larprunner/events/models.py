@@ -28,13 +28,13 @@ class QuestionForEvent(models.Model):
     return self.question.asField(self.required)
 
 class Event(models.Model):
-  name  = models.CharField("Název", maxlength=50)
-  type  = models.CharField("Typ", maxlength=10, choices=ETYPES) 
+  name  = models.CharField("Název", max_length=50)
+  type  = models.CharField("Typ", max_length=10, choices=ETYPES) 
   fluff = models.TextField("Fluff")
   start = models.DateTimeField("Začátek")
   end   = models.DateTimeField("Konec")
   game  = models.ForeignKey(Game, null=True)
-  state   = models.CharField("Stav", maxlength=10, choices=ASTATES, default="CREATED")
+  state   = models.CharField("Stav", max_length=10, choices=ASTATES, default="CREATED")
   question = models.ManyToManyField(QuestionForEvent, null=True)
   information_url = models.URLField(u"Informace o akci", blank=True)
 
@@ -110,7 +110,7 @@ class Event(models.Model):
     send_mail(subject, message, settings.DEFAULT_FROM_EMAIL, [player.user.email])
 
 class MultiGameSlot(models.Model):
-  name = models.CharField("Název", maxlength=50)
+  name = models.CharField("Název", max_length=50)
   start = models.DateTimeField("Začátek")
   end = models.DateTimeField("Konec")
   event = models.ForeignKey(Event)
@@ -133,7 +133,7 @@ class GameInSlot(models.Model):
   game  = models.ForeignKey(Game)
   slot  = models.ForeignKey(MultiGameSlot)
   price = models.PositiveSmallIntegerField("Cena")
-  note  = models.CharField("Fancy name", maxlength=256)
+  note  = models.CharField("Fancy name", max_length=256)
 
   def asLine(self):
     if self.note != "":

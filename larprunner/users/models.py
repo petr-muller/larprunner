@@ -201,7 +201,7 @@ class RegistrationProfile(models.Model):
     
     """
     user = models.ForeignKey(User, unique=True, verbose_name=_('user'))
-    activation_key = models.CharField(_('activation key'), maxlength=40)
+    activation_key = models.CharField(_('activation key'), max_length=40)
     
     objects = RegistrationManager()
     
@@ -245,12 +245,12 @@ class Player(models.Model):
     user = models.ForeignKey(User, unique=True)
 
     # The rest is completely up to you...
-    name = models.CharField(maxlength=30)
-    surname = models.CharField(maxlength=30)
+    name = models.CharField(max_length=30)
+    surname = models.CharField(max_length=30)
     year_of_birth = models.IntegerField()
-    phone = models.CharField(maxlength=13)
-    gender = models.CharField(choices=GENDER_CHOICES, maxlength=10)
-    nick = models.CharField(maxlength=30)
+    phone = models.CharField(max_length=13)
+    gender = models.CharField(choices=GENDER_CHOICES, max_length=10)
+    nick = models.CharField(max_length=30)
 
     def force_reset(self):
       email_template_name='password_reset_email.html'
