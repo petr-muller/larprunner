@@ -67,19 +67,19 @@ class RegistrationForm(forms.Form):
         Validate that the username is alphanumeric and is not already
         in use.        
         """
-        if not ALNUM_REGEXP.search(self.clean_data['username']):
+        if not ALNUM_REGEXP.search(self.cleaned_data['username']):
             raise forms.ValidationError(_(u'Uživatelské jméno může obsahovat pouze písmena, číslice a podtržítko'))
         try:
-            user = User.objects.get(username__iexact=self.clean_data['username'])
+            user = User.objects.get(username__iexact=self.cleaned_data['username'])
         except User.DoesNotExist:
-            return self.clean_data['username']
+            return self.cleaned_data['username']
         raise forms.ValidationError(_(u'Toto uživatelské jméno už je zabráno'))
 
     def clean_email(self):
       try:
-        user = User.objects.get(email__iexact=self.clean_data["email"])
+        user = User.objects.get(email__iexact=self.cleaned_data["email"])
       except User.DoesNotExist:
-        return self.clean_data["email"]
+        return self.cleaned_data["email"]
       raise forms.ValidationError(_(u'Pro tento mail už jeden účet existuje'))
     
     def clean_year_of_birth(self):
@@ -87,17 +87,17 @@ class RegistrationForm(forms.Form):
       Validate the correctness of birth year
       """
       
-      if not YEAR_REGEXP.match(str(self.clean_data['year_of_birth'])):
+      if not YEAR_REGEXP.match(str(self.cleaned_data['year_of_birth'])):
         raise forms.ValidationError(_(u'Špatně zadaný rok'))
-      return self.clean_data['year_of_birth']
+      return self.cleaned_data['year_of_birth']
     
     def clean_phone(self):
       """
       Validate the correctness of phone
       """      
-      if not PHONE_REGEXP.match(self.clean_data['phone'].replace(' ','')):
+      if not PHONE_REGEXP.match(self.cleaned_data['phone'].replace(' ','')):
         raise forms.ValidationError(_(u'Špatně zadané telefonní číslo'))
-      return self.clean_data['phone'].replace(' ','')
+      return self.cleaned_data['phone'].replace(' ','')
 
     def clean(self):
         """
@@ -107,10 +107,10 @@ class RegistrationForm(forms.Form):
         field.
         
         """
-        if 'password1' in self.clean_data and 'password2' in self.clean_data:
-            if self.clean_data['password1'] != self.clean_data['password2']:
+        if 'password1' in self.cleaned_data and 'password2' in self.cleaned_data:
+            if self.cleaned_data['password1'] != self.cleaned_data['password2']:
                 raise forms.ValidationError(_(u'Rozdílná hesla'))
-        return self.clean_data
+        return self.cleaned_data
     
     def save(self, profile_callback=None):
         """
@@ -124,15 +124,15 @@ class RegistrationForm(forms.Form):
         supplied.
         
         """
-        new_user = RegistrationProfile.objects.create_inactive_user(username=self.clean_data['username'],
-                                                                    password=self.clean_data['password1'],
-                                                                    email=self.clean_data['email'],
-                                                                    name = self.clean_data['name'],
-                                                                    surname = self.clean_data['surname'],
-                                                                    year = self.clean_data['year_of_birth'],
-                                                                    phone = self.clean_data['phone'],
-                                                                    gender = self.clean_data['gender'],
-                                                                    nick = self.clean_data['nick'])
+        new_user = RegistrationProfile.objects.create_inactive_user(username=self.cleaned_data['username'],
+                                                                    password=self.cleaned_data['password1'],
+                                                                    email=self.cleaned_data['email'],
+                                                                    name = self.cleaned_data['name'],
+                                                                    surname = self.cleaned_data['surname'],
+                                                                    year = self.cleaned_data['year_of_birth'],
+                                                                    phone = self.cleaned_data['phone'],
+                                                                    gender = self.cleaned_data['gender'],
+                                                                    nick = self.cleaned_data['nick'])
         return new_user
 
 class PreferencesForm(RegistrationForm):
@@ -141,18 +141,18 @@ class PreferencesForm(RegistrationForm):
                               label=u'Login')
 
   def clean_username(self):
-    return self.clean_data['username']
+    return self.cleaned_data['username']
 
   def clean_email(self):
       try:
-        user = User.objects.get(email__iexact=self.clean_data["email"])
+        user = User.objects.get(email__iexact=self.cleaned_data["email"])
       except User.DoesNotExist:
-        return self.clean_data["email"]
-      I = User.objects.get(id=self.clean_data["username"])
+        return self.cleaned_data["email"]
+      I = User.objects.get(id=self.cleaned_data["username"])
       if user != I:
         raise forms.ValidationError(_(u'Pro tento mail už jeden účet existuje'))
       else:
-        return self.clean_data["email"]
+        return self.cleaned_data["email"]
 
   def clean(self):
         """
@@ -161,23 +161,23 @@ class PreferencesForm(RegistrationForm):
         ``non_field_errors()`` because it doesn't apply to a single
         field.
         """
-        if 'password1' in self.clean_data and 'password2' in self.clean_data:
-            if self.clean_data['password1'] != self.clean_data['password2']:
+        if 'password1' in self.cleaned_data and 'password2' in self.cleaned_data:
+            if self.cleaned_data['password1'] != self.cleaned_data['password2']:
                 raise forms.ValidationError(_(u'Rozdílná hesla'))
-        return self.clean_data
+        return self.cleaned_data
 
   def save(self):
-    player = Player.objects.get(user=User.objects.get(id=self.clean_data["username"]))
+    player = Player.objects.get(user=User.objects.get(id=self.cleaned_data["username"]))
 
-    player.user.email    = self.clean_data["email"]
-    player.name     = self.clean_data["name"]
-    player.surname  = self.clean_data["surname"]
-    player.year_of_birth     = self.clean_data["year_of_birth"]
-    player.phone    = self.clean_data["phone"]
-    player.gender   = self.clean_data["gender"]
-    player.nick     = self.clean_data["nick"]
-    if self.clean_data["password1"] and self.clean_data["password2"]:
-      player.user.set_password(self.clean_data["password1"])
+    player.user.email    = self.cleaned_data["email"]
+    player.name     = self.cleaned_data["name"]
+    player.surname  = self.cleaned_data["surname"]
+    player.year_of_birth     = self.cleaned_data["year_of_birth"]
+    player.phone    = self.cleaned_data["phone"]
+    player.gender   = self.cleaned_data["gender"]
+    player.nick     = self.cleaned_data["nick"]
+    if self.cleaned_data["password1"] and self.cleaned_data["password2"]:
+      player.user.set_password(self.cleaned_data["password1"])
     player.save()
     player.user.save()
 
