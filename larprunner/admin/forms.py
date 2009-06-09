@@ -4,6 +4,7 @@ from models import Game, QuestionForGame
 from larprunner.events.forms import DynamicForm
 from larprunner.questions.models import Question
 from django.forms.util import smart_unicode
+from django.forms import ModelForm
 
 class SlotForm(forms.Form):
   def __init__(self, slotid, *args, **kwargs):
@@ -45,3 +46,7 @@ class QuestionForm(DynamicForm):
         if self.data["%s_required" % queid]:
           quegame.required = True
         quegame.save()
+
+class GameForm(ModelForm):
+  class Meta:
+    model = Game

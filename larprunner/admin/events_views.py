@@ -2,7 +2,7 @@
 from django.contrib.auth import authenticate, login
 from django.db.models import Q
 from django.http import HttpResponseRedirect
-from django.forms import form_for_instance, form_for_model, BooleanField
+from django.forms import BooleanField
 from django.forms.widgets import Textarea, TextInput, Select, HiddenInput, CheckboxInput
 from django.shortcuts import render_to_response
 from django.template import RequestContext

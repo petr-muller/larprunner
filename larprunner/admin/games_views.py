@@ -4,10 +4,9 @@ from django.shortcuts import render_to_response
 from django.contrib.auth import authenticate, login
 from manipulation import my_login_required, createMenuItems, my_admin_required
 from models import Game, Log, QuestionForGame
-from django.forms import form_for_instance, form_for_model
 from django.forms import ChoiceField, BooleanField
 from django.template import RequestContext
-from forms import SlotForm, QuestionForm
+from forms import SlotForm, QuestionForm, GameForm
 from larprunner.questions.models import Question
 from django.forms.widgets import CheckboxInput
 
@@ -24,11 +23,9 @@ def administrate_games(request):
 @my_admin_required
 def game_modify(request, gameid=None, qmod=False):
   question_form = None 
-  if gameid == "new":
-    GameForm = form_for_model(Game)
-  else:
+  inst = None
+  if gameid != "new":
     inst = Game.objects.get(id=gameid)
-    GameForm = form_for_instance(inst)
 
     questions = Question.objects.all()
     question_form = QuestionForm()
@@ -45,7 +42,9 @@ def game_modify(request, gameid=None, qmod=False):
           fields["%s_required" % question.id].initial = True
     question_form.setFields(fields)
 
+
   if request.method == 'POST':
+
     if qmod:
       form = QuestionForm()
       fields={}
@@ -64,7 +63,7 @@ def game_modify(request, gameid=None, qmod=False):
         form.save()
         return HttpResponseRedirect('/admin/games/')
   else:
-    form = GameForm()
+    form = GameForm(instance=inst)
   return render_to_response('admin/gameform.html', 
                             {'form': form, 'gameid': gameid,
                              'menuitems'  : createMenuItems(),
