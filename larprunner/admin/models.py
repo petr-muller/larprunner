@@ -5,10 +5,10 @@ from larprunner.questions.models import Question
 # Create your models here.
 
 class Game(models.Model):
-  name          = models.CharField("Jméno", max_length=30)
-  roles_male    = models.PositiveSmallIntegerField("Počet mužských rolí")
-  roles_female  = models.PositiveSmallIntegerField("Počet ženských rolí")
-  roles_both    = models.PositiveSmallIntegerField("Počet obecných rolí")
+  name          = models.CharField(u"Jméno", max_length=30)
+  roles_male    = models.PositiveSmallIntegerField(u"Počet mužských rolí")
+  roles_female  = models.PositiveSmallIntegerField(u"Počet ženských rolí")
+  roles_both    = models.PositiveSmallIntegerField(u"Počet obecných rolí")
   information_url = models.URLField(u"Informace o hře", blank=True)
 
   def getUrl(self):
@@ -16,8 +16,8 @@ class Game(models.Model):
       return self.information_url
     return None
 
-  def __str__(self):
-    return self.name
+  def __unicode__(self):
+    return unicode(self.name)
 
   def getMaxM(self):
     return self.roles_male + self.roles_both
@@ -30,7 +30,7 @@ class Game(models.Model):
 
 class QuestionForGame(models.Model):
   question  = models.ForeignKey(Question)
-  required  = models.BooleanField("Vyžadováno")
+  required  = models.BooleanField(u"Vyžadováno")
   game      = models.ForeignKey(Game)
 
   def asField(self):
@@ -40,8 +40,8 @@ class Log(models.Model):
   date = models.DateTimeField(auto_now_add=True)
   user = models.CharField(max_length=30)
   message = models.TextField()
-  def __str__(self):
-    return self.message 
+  def __unicode__(self):
+    return unicode(self.message)
 
 
 
