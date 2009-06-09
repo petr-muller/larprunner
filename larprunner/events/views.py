@@ -123,7 +123,6 @@ def slots(request, eventid):
         form.loadFromEvent(event,Player.objects.get(user=request.user))
         add_error_message(request, message=u"Omlouváme se, došlo k souběhu a během vyplňování formuláře se některé hry zaplnily. Formulář teď zobrazuje aktuální stav.")
   transaction.commit()
-
   notif_messages, error_messages = triage_messages(request)
   transaction.commit()
   return render_to_response(u"events/slots_app.html",
