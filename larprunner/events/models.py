@@ -38,8 +38,8 @@ class Event(models.Model):
   question = models.ManyToManyField(QuestionForEvent, null=True)
   information_url = models.URLField(u"Informace o akci", blank=True)
 
-  def __str__(self):
-    return self.name
+  def __unicode__(self):
+    return unicode(self.name)
 
   def setTempUrl(self):
     if self.information_url:
@@ -114,8 +114,9 @@ class MultiGameSlot(models.Model):
   start = models.DateTimeField("Začátek")
   end = models.DateTimeField("Konec")
   event = models.ForeignKey(Event)
-  def __str__(self):
-    return self.name
+
+  def __unicode__(self):
+    return unicide(self.name)
 
   def printify(self):
     self.games_to_print = GameInSlot.objects.filter(slot = self)
