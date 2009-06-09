@@ -116,7 +116,7 @@ class MultiGameSlot(models.Model):
   event = models.ForeignKey(Event)
 
   def __unicode__(self):
-    return unicide(self.name)
+    return unicode(self.name)
 
   def printify(self):
     self.games_to_print = GameInSlot.objects.filter(slot = self)
