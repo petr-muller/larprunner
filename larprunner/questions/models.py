@@ -42,10 +42,10 @@ QTYPES = (
            )
 
 class Question(models.Model):
-  uniq_name = models.CharField("Unikátní název", maxlength=30)
-  type      = models.CharField("Typ", choices=QTYPES, maxlength=15)
+  uniq_name = models.CharField("Unikátní název", max_length=30)
+  type      = models.CharField("Typ", choices=QTYPES, max_length=15)
   maxlen    = models.PositiveIntegerField("Maximální délka")
-  regexp    = models.CharField("Regulární výraz", maxlength=100)
+  regexp    = models.CharField("Regulární výraz", max_length=100)
   comment   = models.TextField("Komentář")
 
   objects = QuestionManager()
@@ -68,7 +68,7 @@ class Question(models.Model):
     return field
 
 class ChoicesForQuestion(models.Model):
-  choice    = models.CharField(maxlength=50)
+  choice    = models.CharField(max_length=50)
   question  = models.ForeignKey(Question)
 
 class Answer(models.Model):

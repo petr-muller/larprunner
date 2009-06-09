@@ -5,7 +5,7 @@ from larprunner.questions.models import Question
 # Create your models here.
 
 class Game(models.Model):
-  name          = models.CharField("Jméno", maxlength=30)
+  name          = models.CharField("Jméno", max_length=30)
   roles_male    = models.PositiveSmallIntegerField("Počet mužských rolí")
   roles_female  = models.PositiveSmallIntegerField("Počet ženských rolí")
   roles_both    = models.PositiveSmallIntegerField("Počet obecných rolí")
@@ -38,7 +38,7 @@ class QuestionForGame(models.Model):
 
 class Log(models.Model):
   date = models.DateTimeField(auto_now_add=True)
-  user = models.CharField(maxlength=30)
+  user = models.CharField(max_length=30)
   message = models.TextField()
   def __str__(self):
     return self.message 
