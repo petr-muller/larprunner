@@ -1,5 +1,5 @@
 # This Python file uses the following encoding: utf-8
-from django import newforms as forms
+from django import forms
 from larprunner.questions.models import Question, ChoicesForQuestion
 from larprunner.admin.models import Game 
 from models import Event, ASTATES
@@ -7,7 +7,7 @@ from larprunner.events.models import Registration, QuestionForEvent, SlotGameReg
 from larprunner.users.models import Player
 from larprunner.events.widgets import RadioSelectWithDisable
 from django.db.models import Q
-from django.newforms.util import smart_unicode
+from django.forms.util import smart_unicode
 
 class EventForm(forms.Form):  
   id    = forms.IntegerField(widget=forms.HiddenInput, required=False)

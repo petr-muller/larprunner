@@ -1,5 +1,5 @@
 # This Python file uses the following encoding: utf-8
-from django import newforms as forms
+from django import forms
 from django.core.validators import alnum_re
 from django.contrib.auth.models import User
 import re

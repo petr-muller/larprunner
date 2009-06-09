@@ -10,7 +10,7 @@ from django.http import HttpResponseRedirect
 from django.db.models import Q
 from django.db import transaction
 from django.template import RequestContext
-from django.newforms.util import smart_unicode
+from django.forms.util import smart_unicode
 
 @my_login_required
 def triage_messages(request):

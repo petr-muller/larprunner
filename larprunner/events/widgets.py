@@ -1,5 +1,5 @@
-from django.newforms.widgets import RadioInput, RadioFieldRenderer, RadioSelect
-from django.newforms.util import smart_unicode
+from django.forms.widgets import RadioInput, RadioFieldRenderer, RadioSelect
+from django.forms.util import smart_unicode
 from itertools import chain
 
 class RadioInputWithDisable(RadioInput):
