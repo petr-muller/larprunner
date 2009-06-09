@@ -1,6 +1,5 @@
 # This Python file uses the following encoding: utf-8
 from django import forms
-from django.core.validators import alnum_re
 from django.contrib.auth.models import User
 import re
 
@@ -17,8 +16,9 @@ GENDER_CHOICES = (
     ('Female', 'Žena'),    
 )
 
-YEAR_REGEXP=re.compile("\d{4}")
-PHONE_REGEXP=re.compile("\+\d{12}")
+YEAR_REGEXP=re.compile(r'\d{4}')
+PHONE_REGEXP=re.compile(r'\+\d{12}')
+ALNUM_REGEGX=re.compile(r'^\w+$')
 def _(msg):
   return msg
 
@@ -67,7 +67,7 @@ class RegistrationForm(forms.Form):
         Validate that the username is alphanumeric and is not already
         in use.        
         """
-        if not alnum_re.search(self.clean_data['username']):
+        if not ALNUM_REGEXP.search(self.clean_data['username']):
             raise forms.ValidationError(_(u'Uživatelské jméno může obsahovat pouze písmena, číslice a podtržítko'))
         try:
             user = User.objects.get(username__iexact=self.clean_data['username'])
