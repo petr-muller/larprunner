@@ -1,7 +1,7 @@
 {% extends "commonui.html" %}
 
 {% block content %}
-<form action="." method="POST">
+<form action="." method="post">
     <table>
     {{ form.as_table }}
     </table>
@@ -21,11 +21,11 @@
 {% endifnotequal%}
 
 {% ifnotequal gameid None %}
-<form action="/admin/games/delete/{{ gameid }}/">
+<form action="/admin/games/delete/{{ gameid }}/" method="post">
 <input type="submit" value="Smazat">
 </form>
 {% endifnotequal %}
-<form action="/admin/games/">
+<form action="/admin/games/" method="post">
 <input type="submit" value="Zpět">
 </form>
 {% endblock %}
