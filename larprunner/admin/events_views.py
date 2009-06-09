@@ -114,7 +114,7 @@ def slot_modify(request, eventid, slotid=None):
     if form.is_valid():
       form.save()
       log = Log(user=request.user,
-                message=log_message+" "+form.clean_data['name'])
+                message=log_message+" "+form.cleaned_data['name'])
       log.save()
       request.user.message_set.create(message=u"V eventu %s změněn slot")
       return HttpResponseRedirect('/admin/events/multi/%s/' % eventid )
@@ -140,10 +140,10 @@ def add_game_to_slot(request, eventid="", slotid=""):
     form = SlotForm(slotid, request.POST)
 
     if form.is_valid():
-      tmp = GameInSlot(game=Game.objects.get(id=int(form.clean_data['games'])),
-                       slot=MultiGameSlot.objects.get(id=int(form.clean_data['slot'])),
-                       price=form.clean_data['price'],
-                       note=form.clean_data['note'])
+      tmp = GameInSlot(game=Game.objects.get(id=int(form.cleaned_data['games'])),
+                       slot=MultiGameSlot.objects.get(id=int(form.cleaned_data['slot'])),
+                       price=form.cleaned_data['price'],
+                       note=form.cleaned_data['note'])
       tmp.save()
       return HttpResponseRedirect('/admin/events/multi/%s/slots/%s/' % (eventid, slotid))
     else:

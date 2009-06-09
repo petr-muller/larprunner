@@ -121,25 +121,25 @@ class ApplicationForm(DynamicForm):
     reg = Registration.objects.create(player = Player.objects.get(user=user),
                                       event = Event.objects.get(id=eventid))
 
-    for key in self.clean_data.keys():
+    for key in self.cleaned_data.keys():
       question = Question.objects.get(id=key)
       choices = ChoicesForQuestion.objects.filter(question=question)
       if len(choices) != 0:
-        if [].__class__ != self.clean_data[key].__class__:
-          self.clean_data[key] = [self.clean_data[key]]
-        for data in self.clean_data[key]:
+        if [].__class__ != self.cleaned_data[key].__class__:
+          self.cleaned_data[key] = [self.cleaned_data[key]]
+        for data in self.cleaned_data[key]:
           reg.answers.create(question=question,
                              answer=str(ChoicesForQuestion.objects.get(id=data).choice))
       else:
         reg.answers.create(question=question,
-                           answer = u'%s' % self.clean_data[key])
+                           answer = u'%s' % self.cleaned_data[key])
 
 class QuestionsForGamesForm(DynamicForm):
   def save(self, user):
     slots = {}
-    for key in self.clean_data.keys():
+    for key in self.cleaned_data.keys():
       slotid, question  = key.split('_')
-      answer          = self.clean_data[key]
+      answer          = self.cleaned_data[key]
       if not slots.has_key(slotid):
         slots[slotid] = []
       slots[slotid].append((question, answer))
@@ -195,12 +195,12 @@ class SlotAppForm(DynamicForm):
 
   def save(self, event, user):
     player = Player.objects.get(user=user)
-    for key in self.clean_data.keys():
-      if self.clean_data[key] != u"":
+    for key in self.cleaned_data.keys():
+      if self.cleaned_data[key] != u"":
         for reg in MultiGameSlot.objects.get(id=key).gameinslot_set.all():
           reg.slotgameregistration_set.filter(player=player).delete()
-        if self.clean_data[key] != "-1":
-          slot = GameInSlot.objects.get(id=self.clean_data[key])
+        if self.cleaned_data[key] != "-1":
+          slot = GameInSlot.objects.get(id=self.cleaned_data[key])
           if slot.isFreeFor(player.gender):
             sgr = SlotGameRegistration.objects.create(player=player, slot=slot)
           else:

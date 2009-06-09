@@ -35,16 +35,16 @@ class CreateQuestionForm(forms.Form):
 
   def save(self):
     modificator = Question.objects.modQuestion
-    if self.clean_data['id'] == "":
+    if self.cleaned_data['id'] == "":
       id = None
     else:
-      id = self.clean_data['id']
+      id = self.cleaned_data['id']
 
     mod_question = modificator( id = id,
-                                uname=self.clean_data['uniq_name'],
-                                type =self.clean_data['type'],
-                                maxlen=self.clean_data['maxlen'],
-                                regexp = self.clean_data['regexp'],
-                                comment = self.clean_data['comment'],
-                                choices = self.clean_data['choices'].split('&'))
+                                uname=self.cleaned_data['uniq_name'],
+                                type =self.cleaned_data['type'],
+                                maxlen=self.cleaned_data['maxlen'],
+                                regexp = self.cleaned_data['regexp'],
+                                comment = self.cleaned_data['comment'],
+                                choices = self.cleaned_data['choices'].split('&'))
     return mod_question
