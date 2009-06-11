@@ -1,25 +1,21 @@
 # This Python file uses the following encoding: utf-8
+from django.conf import settings
+from django.contrib.auth.models import User
+from django.contrib.sites.models import Site
+from django.db import models
+from django.template import Context, loader
+from django.template.loader import render_to_string
 import datetime
 import random
 import re
 import sha
 
-from django.conf import settings
-from django.db import models
-from django.template.loader import render_to_string
-from django.contrib.auth.models import User
-from django.contrib.sites.models import Site
-from django.template import Context, loader
-
 SHA1_RE = re.compile('^[a-f0-9]{40}$')
 
 GENDER_CHOICES = (
   ('Male', 'Muž'),
-  ('Female', 'Žena'),    
+  ('Female', 'Žena'),
 )
-
-def _(msg):
-  return msg
 
 class RegistrationManager(models.Manager):
   """
@@ -67,7 +63,7 @@ class RegistrationManager(models.Manager):
     return False
     
   def create_inactive_user(self, username, password, email,
-                           name, surname, year, phone, gender,nick,
+                           name, surname, year, phone, gender, nick,
                            send_email=True):
     """
     Create a new, inactive ``User``, generates a
@@ -124,7 +120,7 @@ class RegistrationManager(models.Manager):
       
     """
     salt = sha.new(str(random.random())).hexdigest()[:5]
-    activation_key = sha.new(salt+user.username).hexdigest()
+    activation_key = sha.new(salt + user.username).hexdigest()
     return self.create(user=user,
                        activation_key=activation_key)
         
