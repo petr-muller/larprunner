@@ -1,15 +1,13 @@
 # This Python file uses the following encoding: utf-8
 
-from django.http import HttpResponseRedirect
-from django.contrib.auth import authenticate
-from django.contrib.auth import login as django_login
-from django.contrib.auth import logout as django_logout
-from larprunner.admin.manipulation import my_login_required
-from django.shortcuts import render_to_response
 from django.conf import settings
+from django.contrib.auth import authenticate, login as django_login, \
+    logout as django_logout
 from django.core.urlresolvers import reverse
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, HttpResponseRedirect
+from django.shortcuts import render_to_response
 from django.template import RequestContext
+from larprunner.admin.manipulation import my_login_required
 from larprunner.users.forms import RegistrationForm, PreferencesForm
 from larprunner.users.models import RegistrationProfile
 
@@ -17,11 +15,11 @@ from larprunner.users.models import RegistrationProfile
 def login(request,
           next='/',
           bad=None,
-          template_name = "login-screen.html"):
+          template_name="login-screen.html"):
   if request.method == 'POST':
     username = request.POST.get('username', None)
     password = request.POST.get('password', None)
-    next     = request.POST.get('next', '/')
+    next = request.POST.get('next', '/')
     if None not in (username, password):
       user = authenticate(username=username, password=password)
       if user is not None and user.is_active:     
