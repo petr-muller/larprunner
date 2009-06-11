@@ -2,6 +2,7 @@
 from django import forms
 from models import Game, QuestionForGame
 from larprunner.events.forms import DynamicForm
+from larprunner.events.models import MultiGameSlot
 from larprunner.questions.models import Question
 from django.forms.util import smart_unicode
 from django.forms import ModelForm
@@ -50,3 +51,7 @@ class QuestionForm(DynamicForm):
 class GameForm(ModelForm):
   class Meta:
     model = Game
+
+class ActualSlotForm(ModelForm):
+  class Meta:
+    model = MultiGameSlot

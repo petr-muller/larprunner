@@ -6,7 +6,7 @@ from django.forms import BooleanField
 from django.forms.widgets import Textarea, TextInput, Select, HiddenInput, CheckboxInput
 from django.shortcuts import render_to_response
 from django.template import RequestContext
-from forms import SlotForm, ThrowOutForm
+from forms import SlotForm, ThrowOutForm, ActualSlotForm
 from larprunner.events.forms import RegistrationForm, SingleEventForm, MultiEventForm
 from larprunner.events.models import Event, MultiGameSlot, GameInSlot, Registration, SlotGameRegistration
 from larprunner.questions.models import Question
@@ -99,17 +99,16 @@ def modify(request, eventid=None, type=u"single", regcreate=None):
   
 @my_admin_required
 def slot_modify(request, eventid, slotid=None):
-  if slotid == u"new":
-    ActualSlotForm = form_for_model(MultiGameSlot)
-    log_message = u"Pro event %s přidán slot"
+
+  if slotid != 'new':
+    inst = MultiGameSlot.objects.get(id=slotid)
+    form = ActualSlotForm(instance = inst)
+    sgf = SlotForm(slotid)
+  else:
     sgf = None
     slotid = None
+    form = ActualSlotForm()
 
-  else:
-    inst = MultiGameSlot.objects.get(id=slotid)
-    ActualSlotForm = form_for_instance(inst)
-    log_message = u"V eventu %s změněn slot"
-    sgf = SlotForm(slotid)
   if request.method == u'POST':
     form = ActualSlotForm(request.POST)
     if form.is_valid():
@@ -120,10 +119,8 @@ def slot_modify(request, eventid, slotid=None):
       request.user.message_set.create(message=u"V eventu %s změněn slot")
       return HttpResponseRedirect(u'/admin/events/multi/%s/' % eventid )
   else:
-    form = ActualSlotForm()
     form.initial[u'event'] = eventid
     form.fields[u'event'].choices = ((eventid,u"LARP"),)
-
 
   return render_to_response(u'admin/slotform.html',
                               {u'form'         : form,
