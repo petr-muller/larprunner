@@ -3,7 +3,7 @@
     <fieldset><legend>Hry</legend>
     <table>
     {% for game in games %}
-    <tr><td><a href="/admin/games/{{game.id}}">{{ game }}</a></tr><td>
+    <tr><td><a href="/admin/games/{{game.id}}/">{{ game }}</a></tr><td>
     {% endfor %}
     </table>
     </fieldset>

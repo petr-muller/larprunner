@@ -12,7 +12,7 @@ def questions(request):
                             { 'menuitems' : createMenuItems('questions'),
                               'questions' : Question.objects.all(),                              
                               'user'      : request.user,
-                              'title'     : "Otázky"  }
+                              'title'     : u"Otázky"  }
                             )
 
 @my_admin_required
@@ -29,6 +29,6 @@ def question_edit(request, queid):
     return render_to_response("admin/questionform.html",
                             { 'menuitems' : createMenuItems('questions'),
                               'user'      : request.user,
-                              'title'     : 'Změnit otázku',
+                              'title'     : u'Změnit otázku',
                               'form'      : form})
 

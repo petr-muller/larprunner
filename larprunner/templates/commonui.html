@@ -27,7 +27,7 @@
     {% ifequal item.active 1 %}
     <b>{{ item.screen }} </b>
     {% else %}
-    <a href="/admin/{{ item.path }}">{{ item.screen }}</a>
+    <a href="/admin/{{ item.path }}/">{{ item.screen }}</a>
     {% endifequal %}
     {% endfor %}
     </span>

@@ -5,7 +5,7 @@
     <table>    
     {% for que in questions %}
     <tr>
-    	<td><a href="/admin/questions/{{que.id}}">{{ que.uniq_name }}</a></td>
+    	<td><a href="/admin/questions/{{que.id}}/">{{ que.uniq_name }}</a></td>
     	<td>{{ que.comment }}</td>
     </tr>
     {% endfor %}
