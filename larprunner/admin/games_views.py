@@ -58,7 +58,8 @@ def game_modify(request, gameid=None, qmod=False):
         form.save(gameid)
         return HttpResponseRedirect('/admin/games/')
     else:
-      form = GameForm(request.POST)
+      form = GameForm(request.POST, instance=inst)
+      print "We should end here"
       if form.is_valid():
         form.save()
         return HttpResponseRedirect('/admin/games/')
@@ -75,8 +76,6 @@ def game_modify(request, gameid=None, qmod=False):
 def game_delete(request, gameid=None):
   if gameid is not None:    
     game = Game.objects.get(id=gameid)
-    log = Log(user=request.user, message="Smazána hra"+" "+ game.name)
-    log.save()
     game.delete()
     request.user.message_set.create(message=u"Hra úspěšně smazána")    
   return HttpResponseRedirect('/admin/games/')    
