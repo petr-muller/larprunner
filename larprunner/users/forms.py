@@ -18,7 +18,7 @@ GENDER_CHOICES = (
 
 YEAR_REGEXP=re.compile(r'\d{4}')
 PHONE_REGEXP=re.compile(r'\+\d{12}')
-ALNUM_REGEGX=re.compile(r'^\w+$')
+ALNUM_REGEXP=re.compile(r'^\w+$')
 def _(msg):
   return msg
 
