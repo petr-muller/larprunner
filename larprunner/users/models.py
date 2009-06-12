@@ -190,14 +190,14 @@ class RegistrationProfile(models.Model):
   ``RegistrationManager``.
     
   """
-  user = models.ForeignKey(User, unique=True, verbose_name=_('user'))
-  activation_key = models.CharField(_('activation key'), max_length=40)
+  user = models.ForeignKey(User, unique=True, verbose_name='user')
+  activation_key = models.CharField('activation key', max_length=40)
   
   objects = RegistrationManager()
     
   class Meta:
-    verbose_name = _('registration profile')
-    verbose_name_plural = _('registration profiles')
+    verbose_name = 'registration profile'
+    verbose_name_plural = 'registration profiles'
     
   def __unicode__(self):
     return u"Registration information for %s" % self.user
