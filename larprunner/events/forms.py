@@ -91,7 +91,12 @@ class DynamicForm(forms.Form):
   def setData(self, kwds):
     for name,field in self.fields.items():
         self.data[name] = field.widget.value_from_datadict(
-                            kwds, self.add_prefix(name))
+                            kwds, None, self.add_prefix(name))
+# seems this ugly hack works. haha. 
+# MAJOR MAJOR MAJOR TODO: 
+# http://www.b-list.org/weblog/2008/nov/09/dynamic-forms/
+# There shalt be your enlightenment
+
     self.is_bound = True
 
   def validate(self, post):
