@@ -11,17 +11,15 @@ from larprunner.events.forms import RegistrationForm, SingleEventForm, MultiEven
 from larprunner.events.models import Event, MultiGameSlot, GameInSlot, Registration, SlotGameRegistration
 from larprunner.questions.models import Question
 from manipulation import my_login_required, createMenuItems, my_admin_required
-from models import Game, Log
+from models import Game
 from django.template.loader import render_to_string
 from django.conf import settings
 from django.core.mail import send_mail
 
 @my_admin_required
 def overview(request):
-  logs = Log.objects.order_by(u"-id")[:10]
   return render_to_response(u"admin/overview.html",
-                            { u'logs'      : logs,
-                              u'menuitems' : createMenuItems(u"overview"),
+                            { u'menuitems' : createMenuItems(u"overview"),
                               u'user'      : request.user,
                               u'title'     : u'Přehled'})
 
@@ -57,7 +55,10 @@ def modify(request, eventid=None, type=u"single", regcreate=None):
       form = Form(request.POST)
 
     form.save(eventid)
-    return HttpResponseRedirect(u'/admin/events/%s/%s/' % (type, eventid))
+    if eventid == "new":
+      return HttpResponseRedirect(u'/admin/events/')
+    else:
+      return HttpResponseRedirect(u'/admin/events/%s/%s/' % (type, eventid))
   else:
 
     form = Form()
@@ -113,9 +114,6 @@ def slot_modify(request, eventid, slotid=None):
     form = ActualSlotForm(request.POST)
     if form.is_valid():
       form.save()
-      log = Log(user=request.user,
-                message=log_message+" "+form.cleaned_data[u'name'])
-      log.save()
       request.user.message_set.create(message=u"V eventu %s změněn slot")
       return HttpResponseRedirect(u'/admin/events/multi/%s/' % eventid )
   else:

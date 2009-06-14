@@ -5,7 +5,7 @@
     <table>    
     {% for s_event in events_s %}
     <tr>
-		<td><a href="/admin/events/single/{{s_event.id}}">{{ s_event }}</a></td>
+		<td><a href="/admin/events/single/{{s_event.id}}/">{{ s_event }}</a></td>
 		<td><a href="/admin/events/single/{{s_event.id}}/people/">Přihlášky</a></td>
    	</tr>
     {% endfor %}
