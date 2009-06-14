@@ -15,7 +15,7 @@
     <table>    
     {% for m_event in events_m %}
     <tr>
-		<td><a href="/admin/events/multi/{{m_event.id}}">{{ m_event }}</a></td>
+		<td><a href="/admin/events/multi/{{m_event.id}}/">{{ m_event }}</a></td>
 		<td><a href="/admin/events/multi/{{m_event.id}}/people/">Přihlášky</a></td>
 		<td><a href="/admin/events/multi/{{m_event.id}}/people_at_slots/">Lidé ve slotech</a></td>
     </tr>
@@ -25,8 +25,8 @@
     
     <fieldset><legend>Vytvořit nový</legend>
     <span id="small-menu">
-    	<a href = "/admin/events/single/new">Jedna hra</a>
-    	<a href = "/admin/events/multi/new">Více her (LV)</a>
+      <a href = "/admin/events/single/new/">Jedna hra</a>
+      <a href = "/admin/events/multi/new/">Více her (LV)</a>
     </span>
            
     {% endblock %}
