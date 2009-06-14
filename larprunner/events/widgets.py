@@ -1,6 +1,7 @@
 from django.forms.widgets import RadioInput, RadioFieldRenderer, RadioSelect
 from django.forms.util import smart_unicode
 from itertools import chain
+#FIXME: Updatnout tyhle tridy na ty z aktualniho Djanga
 
 class RadioInputWithDisable(RadioInput):
     "An object used by RadioFieldRenderer that represents a single <input type='radio'>."
@@ -29,12 +30,19 @@ class RadioFieldRendererWithDisable(RadioFieldRenderer):
     def __getitem__(self, idx):
         choice = self.choices[idx] # Let the IndexError propogate
         return RadioInputWithDisable(self.name, self.value, self.attrs.copy(), choice, idx)
-  
+
+    def __unicode__(self):
+      return self.render()
+
+    def render(self):
+      return u'<ul>\n%s\n</ul>' % u'\n'.join([u'<li>%s</li>'
+                % w for w in self])
+
 class RadioSelectWithDisable(RadioSelect):
   def render(self, name, value, attrs=None, choices=()):
     "Returns a RadioFieldRenderer instance rather than a Unicode string."
     if value is None: value = ''
     str_value = smart_unicode(value) # Normalize to string.
     attrs = attrs or {}
-    return RadioFieldRendererWithDisable(name, str_value, attrs, list(chain(self.choices, choices)))
+    return RadioFieldRendererWithDisable(name, str_value, attrs, list(chain(self.choices, choices))).__unicode__()
     
