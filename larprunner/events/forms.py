@@ -78,7 +78,9 @@ class MultiEventForm(EventForm):
 
   def getGame(self, gameid):
     return None
-
+#============================================================
+# WARNING: this is dangerous crap
+# I don't know a shit how this worked and works, not to speak about fixing it :(
 class DynamicForm(forms.Form):
   def setFields(self, kwds):
     keys = kwds.keys()
@@ -94,6 +96,7 @@ class DynamicForm(forms.Form):
 
   def validate(self, post):
     self.full_clean()
+#============================================================
 
 class RegistrationForm(DynamicForm):
   def save(self, eventid):
