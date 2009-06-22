@@ -14,6 +14,7 @@ from manipulation import my_login_required, createMenuItems, my_admin_required
 from models import Game
 from django.template.loader import render_to_string
 from django.conf import settings
+from django.http import HttpResponse
 from django.core.mail import send_mail
 
 @my_admin_required
@@ -148,7 +149,7 @@ def add_game_to_slot(request, eventid="", slotid=""):
     return HttpResponseRedirect(u'/admin/events/multi/%s/slots/%s/' % (eventid, slotid))
 
 @my_admin_required
-def show_applied_people(request, eventid):
+def show_applied_people(request, eventid, slotted=False, cvsexport=False):
   event = Event.objects.get(id=eventid)
   regs = Registration.objects.filter(event=event).order_by(u"player")
   people = [ reg.player for reg in regs ]
@@ -157,6 +158,11 @@ def show_applied_people(request, eventid):
   headlines = [ u"Jméno", u"Telefon", u"Email", u"Rok narození"] + [ que.question.uniq_name for que in event.question.all() ]
   if event.game is not None:
     headlines.extend([ que.question.uniq_name for que in event.game.questionforgame_set.all() ])
+  if slotted and event.type == "multi":
+    slots = MultiGameSlot.objects.filter(event=event)
+    headlines.extend([ slot.name for slot in slots ])
+  else:
+    slots=[]
   cells = []
   for player in people:
     row   = [ u"%s, %s (%s)" %  (player.surname, player.name, player.nick) ]
@@ -168,15 +174,27 @@ def show_applied_people(request, eventid):
     if event.game is not None:
       for question in [ que.question for que in event.game.questionforgame_set.all()]:
         answers = reg.answers.filter(question=question)
-        row += [ u",".join( [ ans.answer for ans in answers ]) ]
+        row += [ ",".join( [ ans.answer for ans in answers ]) ]
+    for slot in slots:
+      game = slot.getGameForPlayer(player)
+      if game:
+        row.append(game.game.name)
+      else:
+        row.append("--nic---")
     cells.append(row)
+  
+  if cvsexport:
+    cells = [headlines] + cells
+    print cells
+    return HttpResponse("\n".join([",".join([ '"%s"' % str(elm) for elm in row]) for row in cells ]), mimetype="text/plain")
 
-  return render_to_response(u'admin/eventpeople.html',
-                              {u'menuitems'    : createMenuItems(),
-                               u'title'        : u"Lidé přihlášení na %s" % event.name,
-                               u'user'         : request.user,
-                               u'cells'        : cells,
-                               u'headers'      : headlines},
+  return render_to_response('admin/eventpeople.html',
+                              {'menuitems'    : createMenuItems(),
+                               'title'        : u"Lidé přihlášení na %s" % event.name,
+                               'user'         : request.user,
+                               'cells'        : cells,
+                               'headers'      : headlines,
+                               'event'        : event},
                               )
 
 @my_admin_required
@@ -207,13 +225,13 @@ def delete_game_from_slot(request, eventid, slotid, gameid):
 @my_admin_required
 def slot_details(request, eventid, slotid):
   game = GameInSlot.objects.get(id=slotid)
-  regs = SlotGameRegistration.objects.filter(slot=game).order_by(u"player")
-  headlines = [ u"Jméno"] + [ que.question.uniq_name for que in game.game.questionforgame_set.all() ]
+  regs = SlotGameRegistration.objects.filter(slot=game).order_by("player")
+  headlines = [ "Jméno", "Telefon" ] + [ que.question.uniq_name for que in game.game.questionforgame_set.all() ]
   people = [ reg.player for reg in regs ]
   people.sort(lambda x,y: cmp(x.surname, y.surname))
   rows = []
   for person in people:
-    cols = [ " ".join((person.name, person.surname, "".join((u"(" , person.nick , u")")))) ]
+    cols = [ " ".join((person.name, person.surname, "".join((u"(" , person.nick , u")")))), person.phone ]
     registration = SlotGameRegistration.objects.get(slot=game, player=person)
     for question in game.game.questionforgame_set.all():
       answers = registration.answers.filter(question=question.question)
