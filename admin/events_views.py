@@ -157,7 +157,7 @@ def show_applied_people(request, eventid, slotted=False, cvsexport=False):
 
   headlines = [ u"Příjmení", u"Jméno", u"Přezdívka", u"Telefon", u"Email", u"Rok narození"] + [ que.question.uniq_name for que in event.question.all() ]
   if event.game is not None:
-    headlines.extend([ que.question.uniq_name for que in event.game.questionforgame_set.manall() ])
+    headlines.extend([ que.question.uniq_name for que in event.game.questionforgame_set.all() ])
   if slotted and event.type == "multi":
     slots = MultiGameSlot.objects.filter(event=event)
     headlines.extend([ slot.name for slot in slots ])
