@@ -5,6 +5,10 @@
 <fieldset>
 <legend>Hry</legend>
 <table>
+  {% if not games %}
+    Momentálně není žádná otevřená přihláška.
+  {%endif%}
+
 {% for game in games %}
 <tr class="{{game.evenity}}_row">
 <td>

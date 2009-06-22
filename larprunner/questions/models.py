@@ -52,7 +52,7 @@ class Question(models.Model):
 
   def asField(self, required=True):
 
-    choices = ChoicesForQuestion.objects.filter(question=self)
+    choices = ChoicesForQuestion.objects.filter(question=self).order_by("id")
     choices_prepared=[]
     for choice in choices:
       choices_prepared.append((choice.id, choice.choice))
@@ -68,7 +68,7 @@ class Question(models.Model):
     return field
 
 class ChoicesForQuestion(models.Model):
-  choice    = models.CharField(max_length=50)
+  choice    = models.CharField(max_length=252)
   question  = models.ForeignKey(Question)
 
 class Answer(models.Model):

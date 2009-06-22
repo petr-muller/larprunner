@@ -131,7 +131,7 @@ class ApplicationForm(DynamicForm):
 
     for key in self.cleaned_data.keys():
       question = Question.objects.get(id=key)
-      choices = ChoicesForQuestion.objects.filter(question=question)
+      choices = ChoicesForQuestion.objects.filter(question=question).order_by("id")
       if len(choices) != 0:
         if [].__class__ != self.cleaned_data[key].__class__:
           self.cleaned_data[key] = [self.cleaned_data[key]]
@@ -150,7 +150,7 @@ class QuestionsForGamesForm(DynamicForm):
       answer          = self.cleaned_data[key]
       if not slots.has_key(slotid):
         slots[slotid] = []
-      slots[slotid].append((question, answer))
+      slots[slotid].append([question, answer])
     player = Player.objects.get(user=user)
     for slot in slots.keys():
       slot_object   = GameInSlot.objects.get(id=slot)
@@ -159,9 +159,9 @@ class QuestionsForGamesForm(DynamicForm):
       
       for ans in slots[slot]:
         question = Question.objects.get(id=ans[0])
-        choices = ChoicesForQuestion.objects.filter(question=question)
+        choices = ChoicesForQuestion.objects.filter(question=question).order_by("id")
         if len(choices) != 0:
-          if [].__class__ != ans[1].__class__:
+          if ans[1].__class__ != [].__class__ and ans[1].__class__ != ().__class__:
             ans[1] = [ans[1]]
           for data in ans[1]:
             registration.answers.create(question=question,

@@ -77,14 +77,15 @@ def event_unapp(request, eventid):
 @my_login_required
 def event_app(request, eventid):
   event = Event.objects.get(id=eventid)
-  questions_for_event = event.question.all()
+  questions_for_event = event.question.all().order_by("question")
   questions_for_game = []
   if event.game is not None:
-    questions_for_game = event.game.questionforgame_set.all()
+    questions_for_game = event.game.questionforgame_set.all().order_by("question")
   fields= {}
   for question in questions_for_event:
-    fields["%s" % question.question.id] = question.asField()
+    fields[("%s" % question.question.id).rjust(20,"0")] = question.asField()
   for question in questions_for_game:
+    
     fields["%s" % question.question.id] = question.asField()
     fields["%s" % question.question.id].label = u"Otázka ke hře %s: %s" % (event.game.name,
                                                                           fields["%s" % question.question.id].label)
@@ -104,7 +105,7 @@ def event_app(request, eventid):
                              'form' : form,
                              'eventid'  : eventid,
                              })
-
+@my_login_required
 @transaction.commit_manually
 def slots(request, eventid):
   event = Event.objects.get(id=eventid)
@@ -132,7 +133,7 @@ def slots(request, eventid):
                              u'notif_messages' : notif_messages,
                              u'error_messages' : error_messages}
                              )
-
+@my_login_required
 def slots_change(request, eventid):
   event = Event.objects.get(id=eventid)
   player = Player.objects.get(user=request.user)
@@ -144,7 +145,11 @@ def slots_change(request, eventid):
 
   fields = {}
   for game in games_applied:
-    for question in game.game.questionforgame_set.all():
+    for question in game.game.questionforgame_set.all().order_by("id"):
+      fields["%s_%s" % (game.id, str(question.question.id).rjust(20,"0"))] = question.asField()
+      fields["%s_%s" % (game.id, str(question.question.id).rjust(20,"0"))].label = u"Otázka ke hře %s: %s" % (game.game.name,
+                                                                     fields["%s_%s" % (game.id, str(question.question.id).rjust(20,"0"))].label)
+
       fields["%s_%s" % (game.id, question.question.id)] = question.asField()
       fields["%s_%s" % (game.id, question.question.id)].label = u"Otázka ke hře %s: %s" % (game.game.name,
                                                                           fields["%s_%s" % (game.id, question.question.id)].label)

@@ -23,7 +23,7 @@ class CreateQuestionForm(forms.Form):
                               required=False)
   def loadValues(self, queid):
     question = Question.objects.get(id=queid)
-    choices = ChoicesForQuestion.objects.filter(question=question)
+    choices = ChoicesForQuestion.objects.filter(question=question).order_by("id")
     self.initial["id"] = question.id
     self.initial["uniq_name"] = question.uniq_name
     self.initial["type"]      = question.type

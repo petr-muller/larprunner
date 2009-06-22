@@ -155,9 +155,9 @@ def show_applied_people(request, eventid, slotted=False, cvsexport=False):
   people = [ reg.player for reg in regs ]
   people.sort(lambda x,y: cmp(x.surname, y.surname))
 
-  headlines = [ u"Jméno", u"Telefon", u"Email", u"Rok narození"] + [ que.question.uniq_name for que in event.question.all() ]
+  headlines = [ u"Příjmení", u"Jméno", u"Přezdívka", u"Telefon", u"Email", u"Rok narození"] + [ que.question.uniq_name for que in event.question.all() ]
   if event.game is not None:
-    headlines.extend([ que.question.uniq_name for que in event.game.questionforgame_set.all() ])
+    headlines.extend([ que.question.uniq_name for que in event.game.questionforgame_set.manall() ])
   if slotted and event.type == "multi":
     slots = MultiGameSlot.objects.filter(event=event)
     headlines.extend([ slot.name for slot in slots ])
@@ -165,7 +165,7 @@ def show_applied_people(request, eventid, slotted=False, cvsexport=False):
     slots=[]
   cells = []
   for player in people:
-    row   = [ u"%s, %s (%s)" %  (player.surname, player.name, player.nick) ]
+    row   = [ player.surname, player.name, player.nick]
     row  += [ player.phone, player.user.email, player.year_of_birth]
     reg   = Registration.objects.get(player=player, event=event)
     for question in [ que.question for que in event.question.all()]:
@@ -186,7 +186,7 @@ def show_applied_people(request, eventid, slotted=False, cvsexport=False):
   if cvsexport:
     cells = [headlines] + cells
     print cells
-    return HttpResponse("\n".join([",".join([ '"%s"' % str(elm) for elm in row]) for row in cells ]), mimetype="text/plain")
+    return HttpResponse("\n".join([",".join([ u'"%s"' % elm for elm in row]) for row in cells ]), mimetype="text/plain")
 
   return render_to_response('admin/eventpeople.html',
                               {'menuitems'    : createMenuItems(),
