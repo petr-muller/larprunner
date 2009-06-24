@@ -3,10 +3,11 @@
   <table>
   <tr>
   <th>Username</th>
-  <th><a href="/admin/users/sort_by_name/">Jméno</a></th>
+  <th><a href="/admin/users/sort_by_surname/">Jméno</a> (<a href="/admin/users/sort_by_nick/">nick</a>)</th>
   <th>Email</th>
   <th>Telefon</th>
   <th><a href="/admin/users/sort_by_year_of_birth/">Narození</a></th>
+  <th><a href="/admin/users/sort_by_id/">UID</a></th>
   <th>Heslo</th>
   <tr>
   {% for player in players %}
@@ -16,6 +17,7 @@
   <td>{{player.user.email}}</td>
   <td>{{player.phone}}</td>
   <td>{{player.year_of_birth}}</td>
+  <td>{{player.user.id}}</td>
   <td><a href="reset/{{ player.id }}/">reset</td>
   </tr>
   {% endfor %}
