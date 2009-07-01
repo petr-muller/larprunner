@@ -5,7 +5,6 @@ urlpatterns = patterns('larprunner',
   
   (r'^login/{0,1}$',        'users.views.login'),
   (r'^logout/{0,1}$',       'users.views.logout'),
-  (r'^passreset/done/{0,1}$',    'events.views.mainpage'),
   (r'^users/prefs/(?P<userid>\d{1,3})/{0,1}$', 'users.views.preferences'),
   
   (r'^badlogin/{0,1}$',     'users.views.login', {'bad' : True}),
@@ -45,9 +44,15 @@ urlpatterns = patterns('larprunner',
   (r'^admin/events/multi/(?P<eventid>\d{1,3})/people_action_slot/{0,1}$', 'admin.events_views.slotregistration_action'),
   (r'^admin/questions/{0,1}$', 'admin.questions_views.questions'),
   (r'^admin/questions/(?P<queid>(new)|(\d{1,3}))/{0,1}$', 'admin.questions_views.question_edit'),
+  
 )
+
 
 urlpatterns += patterns('',
                         (r'^styles/(?P<path>.*)$', 'django.views.static.serve', {'document_root': '/home/afri/Projects/larp-labs/larp-runner/larprunner/media'}),
-                        (r'^passreset/{0,1}$', 'django.contrib.auth.views.password_reset', {'template_name' : 'passreset.html', 'email_template_name' : 'password_reset_email.html'}),                        
+                        (r'^passreset/{0,1}$', 'django.contrib.auth.views.password_reset', {'template_name' : 'passreset.html', 'email_template_name' : 'password_reset_email.html'}),
+                        (r'^passreset/done/$', 'django.contrib.auth.views.password_reset_done', {'template_name' : 'password_reset_done.html'}),
+                        (r'^reset/(?P<uidb36>[0-9A-Za-z]+)-(?P<token>.+)/$', 'django.contrib.auth.views.password_reset_confirm', {'template_name' : 'password_reset_confirm.html'}),
+                        (r'^reset/done/$', 'django.contrib.auth.views.password_reset_complete',{'template_name' : 'password_reset_complete.html'}),
+                        
   )
