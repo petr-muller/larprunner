@@ -10,10 +10,25 @@ from django.conf import settings
 
 # Create your models here.
 ASTATES=(
-           ('CREATED', 'Vytvořená'),
-           ('OPEN'   , 'Otevřená'),
-           ('CLOSED' , 'Zavřená'),
+           ('CREATED' , 'Vytvořená'),
+           ('OPEN'    , 'Otevřená'),
+           ('CLOSED'  , 'Zavřená'),
+           ('ARCHIVED', 'Archivovaná'),
         )
+
+DSTATES=dict(ASTATES)
+DSTATES['NONE']="--nic--"
+
+ACTIONS=(  ('NONE'    , "--nic--"),
+           ('CREATED' , 'Nastavit jako "Vytvořená"'),
+           ('OPEN'    , 'Otevřít registrace'),
+           ('CLOSED'  , 'Uzavřít registrace'),
+           ('ARCHIVED', 'Archivovat'),
+        )
+
+DACTIONS=dict(ACTIONS)
+
+STATE_HIERARCHY=("NONE","CREATED", "OPEN", "CLOSED","ARCHIVED","NONE")
 
 ETYPES=(
         ('single' , 'Jednoduchá'),
@@ -37,6 +52,27 @@ class Event(models.Model):
   state   = models.CharField("Stav", max_length=10, choices=ASTATES, default="CREATED")
   question = models.ManyToManyField(QuestionForEvent, null=True)
   information_url = models.URLField(u"Informace o akci", blank=True)
+
+  def state_previous(self):
+    return STATE_HIERARCHY[STATE_HIERARCHY.index(self.state)-1]
+
+  def state_next(self):
+    return STATE_HIERARCHY[STATE_HIERARCHY.index(self.state)+1]
+
+  def state_previous_name(self):
+    return DSTATES[self.state_previous()]
+
+  def state_next_name(self):
+    return DSTATES[self.state_next()]
+
+  def state_name(self):
+    return DSTATES[self.state]
+
+  def action_previous(self):
+    return DACTIONS[self.state_previous()]
+
+  def action_next(self):
+    return DACTIONS[self.state_next()]
 
   def __unicode__(self):
     return unicode(self.name)

@@ -28,8 +28,12 @@ def overview(request):
 def events(request):
   return render_to_response(u"admin/events.html",
                             { u'menuitems' : createMenuItems(u'events'),
-                              u'events_s'  : Event.objects.filter(type=u"single"),
-                              u'events_m'  : Event.objects.filter(type=u"multi"),
+                              u'events_s'  : Event.objects.filter(type=u"single").filter(Q(state="OPEN")   | 
+                                                                                         Q(state="CLOSED") |
+                                                                                         Q(state="CREATED")),
+                              u'events_m'  : Event.objects.filter(type=u"multi").filter(Q(state="OPEN")   | 
+                                                                                         Q(state="CLOSED") |
+                                                                                         Q(state="CREATED")),
                               u'user'      : request.user,
                               u'title'     : u"Eventy"  }
                             )
@@ -84,7 +88,6 @@ def modify(request, eventid=None, type=u"single", regcreate=None):
           if our_questions.get(question=question).required:
             fields[u"%s_required" % question.id].initial = True
 
-
       reg.setFields(fields)
 
   return render_to_response(u'admin/eventform.html',
@@ -98,7 +101,13 @@ def modify(request, eventid=None, type=u"single", regcreate=None):
                              u'reg'          : reg
                              }
                             )
-  
+@my_admin_required
+def set_state(request, eventid, type, state):
+  event = Event.objects.get(id=eventid)
+  event.state = state
+  event.save()
+  return HttpResponseRedirect(u'/admin/events/')
+
 @my_admin_required
 def slot_modify(request, eventid, slotid=None):
 
