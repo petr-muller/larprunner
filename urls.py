@@ -30,6 +30,7 @@ urlpatterns = patterns('larprunner',
   
   (r'^admin/events/{0,1}$', 'admin.events_views.events'),  
   (r'^admin/events/(?P<type>(single|multi))/(?P<eventid>(new)|(\d{1,3}))/{0,1}$', 'admin.events_views.modify'),
+  (r'^admin/events/(?P<type>(single|multi))/(?P<eventid>(\d{1,3}))/setstate/(?P<state>([A-Z]+))/{0,1}$', 'admin.events_views.set_state'),
   (r'^admin/events/(single|multi)/(?P<eventid>\d{1,3})/people/{0,1}$', 'admin.events_views.show_applied_people'),
   (r'^admin/events/(single|multi)/(?P<eventid>\d{1,3})/people/cvsexport/{0,1}$', 'admin.events_views.show_applied_people', { 'cvsexport' : True }),
   (r'^admin/events/(?P<type>(single|multi))/(?P<eventid>\d{1,3})/regcreate/{0,1}$', 'admin.events_views.modify', {'regcreate' : True}),

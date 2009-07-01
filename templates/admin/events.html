@@ -3,21 +3,58 @@
     
 	<fieldset><legend>Eventy s jednou hrou</legend>	
     <table>    
+    <tr>
+    <td>Hra</td>
+    <td>Seznam přihlášených</td>
+    <td>Předchozí stav</td>
+    <td>Aktuální stav</td>
+    <td>Následující stav</td>
+    </tr>
     {% for s_event in events_s %}
     <tr>
 		<td><a href="/admin/events/single/{{s_event.id}}/">{{ s_event }}</a></td>
 		<td><a href="/admin/events/single/{{s_event.id}}/people/">Přihlášky</a></td>
+		{% ifnotequal s_event.state_previous "NONE" %}
+		  <td><a href="/admin/events/single/{{s_event.id}}/setstate/{{s_event.state_previous}}/"}}>{{s_event.action_previous}}</a></td>
+		{% else %}
+		  <td>--nic--</td>
+		{% endifnotequal%}
+		<td>{{s_event.state_name}}</td>
+    {% ifnotequal s_event.state_next "NONE" %}
+      <td><a href="/admin/events/single/{{s_event.id}}/setstate/{{s_event.state_next}}/"}}>{{s_event.action_next}}</a></td>
+    {% else %}
+      <td>--nic--</td>
+    {% endifnotequal%}
    	</tr>
     {% endfor %}
     </table>
     </fieldset>
     <fieldset><legend>Eventy s více hrami</legend>
-    <table>    
+    <table> 
+        <tr>
+    <td>Hra</td>
+    <td>Seznam přihlášených</td>
+    <td>Obsazenost slotů</td>
+    <td>Předchozí stav</td>
+    <td>Aktuální stav</td>
+    <td>Následující stav</td>
+    </tr>   
     {% for m_event in events_m %}
     <tr>
 		<td><a href="/admin/events/multi/{{m_event.id}}/">{{ m_event }}</a></td>
 		<td><a href="/admin/events/multi/{{m_event.id}}/people/">Přihlášky</a></td>
 		<td><a href="/admin/events/multi/{{m_event.id}}/people_at_slots/">Lidé ve slotech</a></td>
+    {% ifnotequal m_event.state_previous "NONE" %}
+      <td><a href="/admin/events/multi/{{m_event.id}}/setstate/{{m_event.state_previous}}/"}}>{{m_event.action_previous}}</a></td>
+    {% else %}
+      <td>--nic--</td>
+    {% endifnotequal%}
+    <td>{{m_event.state_name}}</td>
+    {% ifnotequal m_event.state_next "NONE" %}
+      <td><a href="/admin/events/multi/{{m_event.id}}/setstate/{{m_event.state_next}}/"}}>{{m_event.action_next}}</a></td>
+    {% else %}
+      <td>--nic--</td>
+    {% endifnotequal%}
     </tr>
     {% endfor %}    
     </table>
@@ -29,5 +66,5 @@
       <a href = "/admin/events/multi/new/">Více her (LV)</a>
     </span>
            
-    {% endblock %}
+{% endblock %}
     
