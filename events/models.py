@@ -28,7 +28,19 @@ ACTIONS=(  ('NONE'    , "--nic--"),
 
 DACTIONS=dict(ACTIONS)
 
-STATE_HIERARCHY=("NONE","CREATED", "OPEN", "CLOSED","ARCHIVED","NONE")
+STATE_NEXT={
+    "CREATED":"OPEN",
+    "OPEN":"CLOSED",
+    "CLOSED":"ARCHIVED",
+    "ARCHIVED":"NONE"
+    }
+
+STATE_PREV={
+    "CREATED":"NONE",
+    "OPEN":"CREATED",
+    "CLOSED":"OPEN",
+    "ARCHIVED":"CLOSED"
+    }
 
 ETYPES=(
         ('single' , 'Jednoduchá'),
@@ -54,10 +66,10 @@ class Event(models.Model):
   information_url = models.URLField(u"Informace o akci", blank=True)
 
   def state_previous(self):
-    return STATE_HIERARCHY[STATE_HIERARCHY.index(self.state)-1]
+    return STATE_PREV[self.state]
 
   def state_next(self):
-    return STATE_HIERARCHY[STATE_HIERARCHY.index(self.state)+1]
+    return STATE_NEXT[self.state]
 
   def state_previous_name(self):
     return DSTATES[self.state_previous()]
