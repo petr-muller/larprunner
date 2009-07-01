@@ -54,5 +54,6 @@ urlpatterns += patterns('',
                         (r'^passreset/done/$', 'django.contrib.auth.views.password_reset_done', {'template_name' : 'password_reset_done.html'}),
                         (r'^reset/(?P<uidb36>[0-9A-Za-z]+)-(?P<token>.+)/$', 'django.contrib.auth.views.password_reset_confirm', {'template_name' : 'password_reset_confirm.html'}),
                         (r'^reset/done/$', 'django.contrib.auth.views.password_reset_complete',{'template_name' : 'password_reset_complete.html'}),
-                        
+                        (r'^(?P<path>(robots.txt)|(favicon.ico))$', 'django.views.static.serve', {'document_root': '/var/www/courtofmoravia/prihlaska/media'}),
+                        (r'^passreset/{0,1}$', 'django.contrib.auth.views.password_reset', {'template_name' : 'passreset.html', 'email_template_name' : 'password_reset_email.html'}),                        
   )
