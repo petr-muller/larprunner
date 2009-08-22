@@ -7,6 +7,7 @@ from larprunner.users.models import Player
 from django.forms.util import smart_unicode
 from django.template.loader import render_to_string
 from django.conf import settings
+from larprunner.hub.models import Hub
 
 # Create your models here.
 ASTATES=(
@@ -130,6 +131,9 @@ class Event(models.Model):
     for slot in slots:
       for game in slot.gameinslot_set.all():
         SlotGameRegistration.objects.filter(player=player, slot=game).delete()
+
+    Hub().deliver("player has unsubscribed from event",
+                  {"nick": player.nick, "event": self.name } )
 
   def getGamesForPlayer(self, player):
     games = []
