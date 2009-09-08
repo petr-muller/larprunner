@@ -137,7 +137,7 @@ class ApplicationForm(DynamicForm):
           self.cleaned_data[key] = [self.cleaned_data[key]]
         for data in self.cleaned_data[key]:
           reg.answers.create(question=question,
-                             answer=str(ChoicesForQuestion.objects.get(id=data).choice))
+                             answer=ChoicesForQuestion.objects.get(id=data).choice)
       else:
         reg.answers.create(question=question,
                            answer = u'%s' % self.cleaned_data[key])
