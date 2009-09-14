@@ -1,12 +1,9 @@
 # This Python file uses the following encoding: utf-8
-
 from django import forms
 from django.db import models
-
 class QuestionManager(models.Manager):
   def modQuestion(self, id, uname, type, maxlen=0, regexp=None, comment=None,
                   choices = ()):
-
     if maxlen is None:
       maxlen=0
     if id is None:
@@ -22,7 +19,6 @@ class QuestionManager(models.Manager):
       question.maxlen = maxlen
       question.regexp = regexp
       question.comment = comment
-
     question.save()
 
     ChoicesForQuestion.objects.filter(question=question).delete()
@@ -32,7 +28,6 @@ class QuestionManager(models.Manager):
         new_choice.save()
 
     return question
-
 
 QTYPES = (
            ('TEXTFIELD',  'Krátký text'),
@@ -67,10 +62,11 @@ class Question(models.Model):
       field = forms.ChoiceField(choices=choices_prepared,label=self.comment,required=required)
     return field
 
+  def getCaption(self):
+    return self.uniq_name
 class ChoicesForQuestion(models.Model):
   choice    = models.CharField(max_length=252)
   question  = models.ForeignKey(Question)
-
 class Answer(models.Model):
   question = models.ForeignKey(Question)
   answer = models.TextField()

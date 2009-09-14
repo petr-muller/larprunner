@@ -28,6 +28,9 @@ class Game(models.Model):
   def getMaxPlayers(self):
     return self.roles_male + self.roles_female + self.roles_both
 
+  def getName(self):
+    return self.name
+
 class QuestionForGame(models.Model):
   question  = models.ForeignKey(Question)
   required  = models.BooleanField(u"Vyžadováno")
@@ -42,6 +45,3 @@ class Log(models.Model):
   message = models.TextField()
   def __unicode__(self):
     return unicode(self.message)
-
-
-

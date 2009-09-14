@@ -161,6 +161,64 @@ class Event(models.Model):
                                 'event'     : self})
     send_mail(subject, message, settings.DEFAULT_FROM_EMAIL, [player.user.email])
 
+  def getPlayers(self):
+    regs = Registration.objects.filter(event=self).order_by(u"player")
+    people = [ reg.player for reg in regs ]
+    return people
+
+  def getPeopleTable(self, qfe=True, qfg=True, slotted=False):
+    players = []
+    headlines = []
+    slots=[]
+    headlines.extend(self.getQuestionNames(qfe, qfg))
+    if slotted and self.type == "multi":
+      slots = MultiGameSlot.objects.filter(event=self)
+      headlines.extend([ slot.getName() for slot in slots ])
+
+    for player in self.getPlayers():
+      reg   = Registration.objects.get(player=player, event=self)
+      record = []
+      record.append(player)
+      if qfg and self.game:
+        row = []
+        for question in [ que.question for que in self.game.questionforgame_set.all()]:
+          answers = reg.answers.filter(question=question)
+          row.extend([ u",".join( [ ans.answer for ans in answers ]) ])
+        record.append(row)
+      else:
+        record.append(None)
+      if qfe:
+        row = []
+        for question in [ que.question for que in self.question.all()]:
+          answers = reg.answers.filter(question=question)
+          row.extend([ u",".join( [ ans.answer for ans in answers ]) ])
+        record.append(row)
+      else:
+        record.append(None)
+
+      if slots:
+        row = []
+        for slot in slots:
+          game = slot.getGameForPlayer(player)
+          if game:
+            row.append(game.getGameName())
+          else:
+            row.append("--nic---")
+      else:
+        row = None
+      record.append(row)
+      players.append(record)
+
+    return players, headlines
+
+  def getQuestionNames(self, qfg=True, qfe=True):
+    headlines = []
+    if self.game is not None and qfg:
+      headlines.extend([ que.question.getCaption() for que in self.game.questionforgame_set.all() ])
+    if qfe:
+      headlines.extend ([ que.question.getCaption() for que in self.question.all() ])
+    return headlines
+
 class MultiGameSlot(models.Model):
   name = models.CharField("Název", max_length=50)
   start = models.DateTimeField("Začátek")
@@ -182,11 +240,17 @@ class MultiGameSlot(models.Model):
 
     return None
 
+  def getName(self):
+    return "Slot '%s'" % self.name
+
 class GameInSlot(models.Model):
   game  = models.ForeignKey(Game)
   slot  = models.ForeignKey(MultiGameSlot)
   price = models.PositiveSmallIntegerField("Cena")
   note  = models.CharField("Fancy name", max_length=256)
+
+  def getGameName(self):
+    return self.game.getName()
 
   def asLine(self):
     if self.note != "":

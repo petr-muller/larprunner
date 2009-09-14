@@ -6,20 +6,43 @@
 				   <a href="/admin/events/multi/{{event.id}}/people/wslots/">Se sloty</a>
 	{% endifequal %}
 	<a href="./cvsexport/">Exportovat do CSV</a>
+	<form action="/admin/events/{{event.type}}/{{event.id}}/people_action/">
     <table>
 	<tr>
-	{% for head in headers %}
+	<td></td>
+	<td>Jméno</td>
+	<td>Příjmení</td>
+	<td>Přezdívka</td>
+	<td>Telefon</td>
+	<td>Mail</td>
+	<td>Rok narození</td>
+	{% for head in additional_headers %}
 	<td>{{ head }}</td>
 	{% endfor %}
 	</tr>
-	{% for row in cells %}
+
+	{% for player, qfg, qfe, slots in records %}
 	<tr>
-		{% for col in row %}
-			<td>{{ col }}</td>
-		{% endfor %}
+	   <td><input type="checkbox" name="magic{{player.id}}" /></td>
+	   <td>{{player.name}}</td>
+	   <td>{{player.surname}}</td>
+	   <td>{{player.nick}}</td>
+	   <td>{{player.phone}}</td>
+	   <td>{{player.getMail}}</td>
+	   <td>{{player.year_of_birth}}</td>
+{% for sqfg in qfg %}
+<td>{{ sqfg }}</td>
+{% endfor %}
+{% for sqfe in qfe %}
+<td>{{ sqfe }}</td>
+{% endfor %}
+{% for slotgame in slots %}
+<td>{{ slotgame }}</td>
+{% endfor %}
 	</tr>
 	{% endfor %}
     </table>
+  <input type="submit" name="unregister" value="Odhlásit" />
+  <input type="submit" name="unregister_with_mail" value="Odhlásit se zprávou" />
+  </form>
 {% endblock %}
-
-

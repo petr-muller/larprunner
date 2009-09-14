@@ -28,16 +28,17 @@ def overview(request):
 def events(request):
   return render_to_response(u"admin/events.html",
                             { u'menuitems' : createMenuItems(u'events'),
-                              u'events_s'  : Event.objects.filter(type=u"single").filter(Q(state="OPEN")   | 
+                              u'events_s'  : Event.objects.filter(type=u"single").filter(Q(state="OPEN")   |
+
                                                                                          Q(state="CLOSED") |
                                                                                          Q(state="CREATED")),
-                              u'events_m'  : Event.objects.filter(type=u"multi").filter(Q(state="OPEN")   | 
+                              u'events_m'  : Event.objects.filter(type=u"multi").filter(Q(state="OPEN")   |
+
                                                                                          Q(state="CLOSED") |
                                                                                          Q(state="CREATED")),
                               u'user'      : request.user,
                               u'title'     : u"Eventy"  }
                             )
-
 @my_admin_required
 def modify(request, eventid=None, type=u"single", regcreate=None):
 
@@ -156,53 +157,33 @@ def add_game_to_slot(request, eventid="", slotid=""):
       return HttpResponseRedirect(u'/admin/events/multi/%s/slots/%s/' % (eventid, slotid))
   else:
     return HttpResponseRedirect(u'/admin/events/multi/%s/slots/%s/' % (eventid, slotid))
-
 @my_admin_required
 def show_applied_people(request, eventid, slotted=False, cvsexport=False):
   event = Event.objects.get(id=eventid)
-  regs = Registration.objects.filter(event=event).order_by(u"player")
-  people = [ reg.player for reg in regs ]
-  people.sort(lambda x,y: cmp(x.surname, y.surname))
+  records = []
+  records, headlines = event.getPeopleTable(qfe=True, qfg=True, slotted=slotted)
 
-  headlines = [ u"Příjmení", u"Jméno", u"Přezdívka", u"Telefon", u"Email", u"Rok narození"] + [ que.question.uniq_name for que in event.question.all() ]
-  if event.game is not None:
-    headlines.extend([ que.question.uniq_name for que in event.game.questionforgame_set.all() ])
-  if slotted and event.type == "multi":
-    slots = MultiGameSlot.objects.filter(event=event)
-    headlines.extend([ slot.name for slot in slots ])
-  else:
-    slots=[]
-  cells = []
-  for player in people:
-    row   = [ player.surname, player.name, player.nick]
-    row  += [ player.phone, player.user.email, player.year_of_birth]
-    reg   = Registration.objects.get(player=player, event=event)
-    for question in [ que.question for que in event.question.all()]:
-      answers = reg.answers.filter(question=question)
-      row += [ u",".join( [ ans.answer for ans in answers ]) ]
-    if event.game is not None:
-      for question in [ que.question for que in event.game.questionforgame_set.all()]:
-        answers = reg.answers.filter(question=question)
-        row += [ ",".join( [ ans.answer for ans in answers ]) ]
-    for slot in slots:
-      game = slot.getGameForPlayer(player)
-      if game:
-        row.append(game.game.name)
-      else:
-        row.append("--nic---")
-    cells.append(row)
-  
   if cvsexport:
-    cells = [headlines] + cells
-    print cells
+    cells = [[u"Jméno", u"Příjmení", u"Přezdívka", u"Telefon", u"Mail", u"Rok narození" ] + headlines]
+    for record in records:
+      rec = [record[0].name, record[0].surname, record[0].nick, record[0].phone, record[0].getMail(), record[0].year_of_birth]
+      if record[1]:
+        rec += record[1]
+      if record[2]:
+        rec += record[2]
+      if record[3]:
+        rec += record[3]
+
+      cells.append(rec)
+
     return HttpResponse("\n".join([",".join([ u'"%s"' % elm for elm in row]) for row in cells ]), mimetype="text/plain")
 
   return render_to_response('admin/eventpeople.html',
                               {'menuitems'    : createMenuItems(),
                                'title'        : u"Lidé přihlášení na %s" % event.name,
                                'user'         : request.user,
-                               'cells'        : cells,
-                               'headers'      : headlines,
+                               'records'      : records,
+                               'additional_headers'      : headlines,
                                'event'        : event},
                               )
 
