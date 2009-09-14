@@ -10,6 +10,7 @@ from forms import SlotForm, ThrowOutForm, ActualSlotForm
 from larprunner.events.forms import RegistrationForm, SingleEventForm, MultiEventForm
 from larprunner.events.models import Event, MultiGameSlot, GameInSlot, Registration, SlotGameRegistration
 from larprunner.questions.models import Question
+from larprunner.users.models import Player
 from manipulation import my_login_required, createMenuItems, my_admin_required
 from models import Game
 from django.template.loader import render_to_string
@@ -235,6 +236,27 @@ def slot_details(request, eventid, slotid):
                              u'game'           : game,
                              u'rows'           : rows,
                              u'headlines'      : headlines})
+
+@my_admin_required
+def people_action(request, eventid=None):
+  ids = []
+  for key in request.POST.keys():
+    if key[:5] == u"magic":
+      try:
+        ids.append(int(key[5:]))
+      except ValueError:
+        pass
+  event=Event.objects.get(id=eventid)
+
+  filterer = Q(id=None)
+  for id in ids:
+    filterer = filterer | Q(id=id)
+
+  players = Player.objects.filter(filterer)
+  if u'unregister' in request.POST.keys():
+    for id in players:
+      event.unregister(id)
+    return HttpResponseRedirect(u'/admin/events/%s/%s/people/' % (event.type, eventid))
 
 @my_admin_required
 def slotregistration_action(request, eventid=None):
