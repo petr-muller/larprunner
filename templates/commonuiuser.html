@@ -32,7 +32,7 @@
 				<legend>larp-runner</legend>
 				<span id="small-menu">
 				{% ifnotequal user None %}
-					{{ user.username }} |
+        {{ user.username }} UID {{ user.id }} |
 					{% if user.is_staff %}
  						<a href="/admin/">Administrace</a> |
 					{% endif %}
