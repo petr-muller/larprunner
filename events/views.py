@@ -98,6 +98,8 @@ def event_app(request, eventid):
     if form.is_valid():
       form.save(eventid, request.user)
       add_notif_message(request, u"%s: přihláška přijata" % smart_unicode(event.name) )
+      if event.type == "multi":
+        return HttpResponseRedirect("/game/%s/slots/" % event.id)
       return HttpResponseRedirect("/")
 
   return render_to_response("events/game_app.html",
