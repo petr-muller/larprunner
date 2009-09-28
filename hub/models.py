@@ -52,7 +52,6 @@ class Hub:
 
     def deliver(self, id, data):
       self.initialize()
-      print "Got message %s, with data: [%s]" % (id, data)
       if self.notify_table.has_key(id):
         message = HubMessage(id, data)
         for observer in self.notify_table[id]:

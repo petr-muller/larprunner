@@ -1,7 +1,7 @@
 # This Python file uses the following encoding: utf-8
 from django.db import models
-from hub.models import Hub, Singleton
-import settings
+from larprunner.hub.models import Hub, Singleton
+from django.conf import settings
 
 class Mailer:
   __metaclass__ = Singleton
