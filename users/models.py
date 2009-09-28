@@ -243,6 +243,12 @@ class Player(models.Model):
   def getMail(self):
     return self.user.email
 
+  def getFullName(self):
+    if self.nick:
+      return "%s '%s' %s" % (self.name, self.nick, self.surname)
+    else:
+      return "%s %s" % (self.name, self.surname)
+
   def force_reset(self):
     email_template_name = 'password_reset_email.html'
     from django.core.mail import send_mail

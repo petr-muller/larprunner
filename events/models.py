@@ -65,6 +65,15 @@ class Event(models.Model):
   state   = models.CharField("Stav", max_length=10, choices=ASTATES, default="CREATED")
   question = models.ManyToManyField(QuestionForEvent, null=True)
   information_url = models.URLField(u"Informace o akci", blank=True)
+  admins = models.CharField("Název", max_length=1000, blank=True)
+
+  def getAdminRecipients(self):
+    if self.admins == "":
+      return None
+    return self.admins.split(";")
+
+  def getName(self):
+    return self.name
 
   def state_previous(self):
     return STATE_PREV[self.state]
@@ -133,7 +142,7 @@ class Event(models.Model):
         SlotGameRegistration.objects.filter(player=player, slot=game).delete()
 
     Hub().deliver("player has unsubscribed from event",
-                  {"nick": player.nick, "event": self.name } )
+                  {"player": player.getFullName(),  "event": self } )
 
   def getGamesForPlayer(self, player):
     games = []

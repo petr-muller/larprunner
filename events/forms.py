@@ -21,6 +21,7 @@ class EventForm(forms.Form):
   game  = forms.ModelChoiceField(Game.objects.all(), required=True, label=u'Hra')
   state = forms.ChoiceField(choices=ASTATES, label=u'Stav')
   url   = forms.URLField(label=u'Informace o akci', verify_exists=True)
+  admins = forms.CharField(max_length=1000, label=u"Administrátoři")
 
   def loadValues(self, event):    
     self.initial["id"] = event.id
@@ -33,6 +34,7 @@ class EventForm(forms.Form):
       self.initial["game"] = event.game.id
     self.initial["state"] = event.state
     self.initial["url"] = event.information_url
+    self.initial["admins"] = event.admins
 
   def getGame(self, id):
     return Game.objects.get(id=self.data["game"])
@@ -46,7 +48,8 @@ class EventForm(forms.Form):
                                    start=self.data["start"],
                                    game=self.getGame(self.data["game"]),
                                    state = self.data["state"],
-                                   information_url = self.data["url"]
+                                   information_url = self.data["url"],
+                                   admins = self.data["admins"]
                                    )
     else:
       event = Event.objects.get(id=self.data["id"])
@@ -58,6 +61,7 @@ class EventForm(forms.Form):
       event.game=self.getGame(self.data["game"])
       event.state = self.data["state"]
       event.information_url = self.data["url"]
+      event.admins = self.data["admins"]
     event.save()
 
   def validate(self):
