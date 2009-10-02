@@ -11,17 +11,18 @@
 	<tr>
 	<td></td>
 	<td>Jméno</td>
-	<td>Příjmení</td>
+	<td><a href="/admin/events/{{event.type}}/{{event.id}}/people/sort_by_surname/">Příjmení</a></td>
 	<td>Přezdívka</td>
 	<td>Telefon</td>
 	<td>Mail</td>
 	<td>Rok narození</td>
+	<td><a href="/admin/events/{{event.type}}/{{event.id}}/people/sort_by_created/">Přihlášen</a></td>
 	{% for head in additional_headers %}
 	<td>{{ head }}</td>
 	{% endfor %}
 	</tr>
 
-	{% for player, qfg, qfe, slots in records %}
+	{% for player,created, qfg, qfe, slots in records %}
 	<tr>
 	   <td><input type="checkbox" name="magic{{player.id}}" /></td>
 	   <td>{{player.name}}</td>
@@ -30,6 +31,7 @@
 	   <td>{{player.phone}}</td>
 	   <td>{{player.getMail}}</td>
 	   <td>{{player.year_of_birth}}</td>
+	   <td>{{created}}</td>
 {% for sqfg in qfg %}
 <td>{{ sqfg }}</td>
 {% endfor %}

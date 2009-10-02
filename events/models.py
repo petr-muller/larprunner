@@ -175,7 +175,7 @@ class Event(models.Model):
     people = [ reg.player for reg in regs ]
     return people
 
-  def getPeopleTable(self, qfe=True, qfg=True, slotted=False):
+  def getPeopleTable(self, qfe=True, qfg=True, slotted=False, sorted="surname"):
     players = []
     headlines = []
     slots=[]
@@ -188,6 +188,7 @@ class Event(models.Model):
       reg   = Registration.objects.get(player=player, event=self)
       record = []
       record.append(player)
+      record.append(reg.created)
       if qfg and self.game:
         row = []
         for question in [ que.question for que in self.game.questionforgame_set.all()]:
@@ -217,6 +218,11 @@ class Event(models.Model):
         row = None
       record.append(row)
       players.append(record)
+
+    if sorted == "surname":
+      players.sort(lambda x,y: cmp(x[0].surname.lower(), y[0].surname.lower()))
+    elif sorted == "created":
+      players.sort(lambda x,y: cmp(x[1], y[1]))
 
     return players, headlines
 
@@ -294,9 +300,11 @@ class GameInSlot(models.Model):
 class Registration(models.Model):
   player = models.ForeignKey(Player)
   event  = models.ForeignKey(Event)
+  created = models.DateTimeField("Created", auto_now_add=True);
   answers = models.ManyToManyField(Answer, null=True)
 
 class SlotGameRegistration(models.Model):
   player  = models.ForeignKey(Player)
   slot    = models.ForeignKey(GameInSlot)
+  created = models.DateTimeField("Created", auto_now_add=True);
   answers = models.ManyToManyField(Answer, null=True)

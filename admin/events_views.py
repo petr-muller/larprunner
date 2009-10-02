@@ -159,10 +159,10 @@ def add_game_to_slot(request, eventid="", slotid=""):
   else:
     return HttpResponseRedirect(u'/admin/events/multi/%s/slots/%s/' % (eventid, slotid))
 @my_admin_required
-def show_applied_people(request, eventid, slotted=False, cvsexport=False):
+def show_applied_people(request, eventid, slotted=False, cvsexport=False, sorted="surname"):
   event = Event.objects.get(id=eventid)
   records = []
-  records, headlines = event.getPeopleTable(qfe=True, qfg=True, slotted=slotted)
+  records, headlines = event.getPeopleTable(qfe=True, qfg=True, slotted=slotted, sorted=sorted)
 
   if cvsexport:
     cells = [[u"Jméno", u"Příjmení", u"Přezdívka", u"Telefon", u"Mail", u"Rok narození" ] + headlines]
