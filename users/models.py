@@ -240,14 +240,35 @@ class Player(models.Model):
   gender = models.CharField(choices=GENDER_CHOICES, max_length=10)
   nick = models.CharField(max_length=30)
 
+  def getLogin(self):
+    return self.user.username
+
   def getMail(self):
     return self.user.email
 
-  def getFullName(self):
-    if self.nick:
-      return "%s '%s' %s" % (self.name, self.nick, self.surname)
+  def getFullName(self, nick=True):
+    if nick and self.nick:
+      return "%s, %s - '%s'" % (self.surname, self.name, self.nick)
     else:
-      return "%s %s" % (self.name, self.surname)
+      return "%s, %s" % (self.surname, self.name)
+
+  def getNick(self):
+    if self.nick:
+      return self.nick
+    else:
+      return ""
+
+  def getPhone(self):
+    return self.phone
+
+  def getBirth(self):
+    return self.year_of_birth
+
+  def getUID(self):
+    return self.user.id
+
+  def getID(self):
+    return self.id
 
   def force_reset(self):
     email_template_name = 'password_reset_email.html'

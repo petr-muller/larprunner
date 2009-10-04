@@ -222,7 +222,7 @@ class Event(models.Model):
     if sorted == "surname":
       players.sort(lambda x,y: cmp(x[0].surname.lower(), y[0].surname.lower()))
     elif sorted == "created":
-      players.sort(lambda x,y: cmp(x[1], y[1]))
+      players.sort(lambda x,y: cmp(str(x[1]), str(y[1])))
 
     return players, headlines
 

@@ -1,27 +1,25 @@
 {% extends "commonui.html" %}
 {% block content %}
   <table>
-  <tr>
-  <th>Username</th>
-  <th><a href="/admin/users/sort_by_surname/">Jméno</a> (<a href="/admin/users/sort_by_nick/">nick</a>)</th>
-  <th>Email</th>
-  <th>Telefon</th>
-  <th><a href="/admin/users/sort_by_year_of_birth/">Narození</a></th>
-  <th><a href="/admin/users/sort_by_id/">UID</a></th>
-  <th>Heslo</th>
-  <tr>
-  {% for player in players %}
-  <tr>
-  <td>{{player.user.username}}</td>
-  <td>{{player.surname}}, {{player.name}} {% if player.nick %} ({{player.nick}}) {% endif %}</td>
-  <td>{{player.user.email}}</td>
-  <td>{{player.phone}}</td>
-  <td>{{player.year_of_birth}}</td>
-  <td>{{player.user.id}}</td>
-  <td><a href="reset/{{ player.id }}/">reset</td>
-  </tr>
+  {% for header in table.headers %}
+  <th>
+    <a href="sort{{ header }}">
+        {{ header }}
+    </a>
+  </th>
+  {% endfor %}
+  {% for record in table.records %}
+    <tr>
+    {% for cell in record %}
+    <td>
+      {% if cell.isSafe %}
+        {{ cell|safe }}
+      {% else %}
+        {{ cell }}
+      {% endif %}
+    </td>
+    {% endfor %}
+    </tr>
   {% endfor %}
   </table>
 {% endblock %}
-
-
