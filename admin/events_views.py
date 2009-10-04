@@ -151,7 +151,10 @@ def add_game_to_slot(request, eventid="", slotid=""):
       tmp = GameInSlot(game=Game.objects.get(id=int(form.cleaned_data[u'games'])),
                        slot=MultiGameSlot.objects.get(id=int(form.cleaned_data['slot'])),
                        price=form.cleaned_data[u'price'],
-                       note=form.cleaned_data[u'note'])
+                       note=form.cleaned_data[u'note'],
+                       reservedM=form.cleaned_data[u'reservedM'],
+                       reservedF=form.cleaned_data[u'reservedF'],
+                       reservedB=form.cleaned_data[u'reservedB'],)
       tmp.save()
       return HttpResponseRedirect(u'/admin/events/multi/%s/slots/%s/' % (eventid, slotid))
     else:

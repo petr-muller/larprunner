@@ -261,8 +261,11 @@ class MultiGameSlot(models.Model):
 class GameInSlot(models.Model):
   game  = models.ForeignKey(Game)
   slot  = models.ForeignKey(MultiGameSlot)
-  price = models.PositiveSmallIntegerField("Cena")
+  price = models.PositiveSmallIntegerField(u"Cena")
   note  = models.CharField("Fancy name", max_length=256)
+  reservedM = models.PositiveSmallIntegerField(u"Rezervováno mužských rolí", default=0)
+  reservedF = models.PositiveSmallIntegerField(u"Rezervováno ženských rolí", default=0)
+  reservedB = models.PositiveSmallIntegerField(u"Rezervováno oboupohlavních rolí", default=0)
 
   def getGameName(self):
     return self.game.getName()
@@ -272,7 +275,10 @@ class GameInSlot(models.Model):
       tmp_note = u", %s" % smart_unicode(self.note)
     else:
       tmp_note = u""
-    return u"%s (%s Kč)%s" % (smart_unicode(self.game.name), smart_unicode(self.price), smart_unicode(tmp_note))
+    return u"%s (%s Kč)%s" % (smart_unicode(self.game.name),
+                                            smart_unicode(self.price),
+                                            smart_unicode(tmp_note),
+                                           )
 
   def isPlayerRegged(self, player):
     try:
@@ -286,16 +292,17 @@ class GameInSlot(models.Model):
 
   def isFreeFor(self, player_gender):
     regsforme = SlotGameRegistration.objects.filter(slot=self)
-    actm=actf=0
+    actm = self.reservedM + self.reservedB;
+    actf = self.reservedF + self.reservedB;
     for reg in regsforme:
       if reg.player.gender == "Male":
         actm += 1
       else:
         actf += 1
     if player_gender == "Male":
-      return (actm<self.game.getMaxM()) and (actm+actf < self.game.getMaxPlayers())
+      return (actm<self.game.getMaxM()) and (actm+actf < (self.game.getMaxPlayers()))
     else:
-      return (actf<self.game.getMaxF()) and (actm+actf < self.game.getMaxPlayers())
+      return (actf<self.game.getMaxF()) and (actm+actf < (self.game.getMaxPlayers()))
 
 class Registration(models.Model):
   player = models.ForeignKey(Player)

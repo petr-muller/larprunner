@@ -18,6 +18,9 @@ class SlotForm(forms.Form):
   slot  = forms.CharField()
   price = forms.IntegerField()
   note  = forms.CharField(required=False)
+  reservedM  = forms.IntegerField()
+  reservedF  = forms.IntegerField()
+  reservedB  = forms.IntegerField()
 
 class ThrowOutForm(DynamicForm):
   mail = forms.CharField(widget=forms.Textarea)
