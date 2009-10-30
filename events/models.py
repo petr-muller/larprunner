@@ -8,6 +8,7 @@ from django.forms.util import smart_unicode
 from django.template.loader import render_to_string
 from django.conf import settings
 from larprunner.hub.models import Hub
+from larprunner.tables.models import MightyTable, SimpleCell, CheckerCell
 
 # Create your models here.
 ASTATES=(
@@ -175,56 +176,58 @@ class Event(models.Model):
     people = [ reg.player for reg in regs ]
     return people
 
-  def getPeopleTable(self, qfe=True, qfg=True, slotted=False, sorted="surname"):
-    players = []
-    headlines = []
-    slots=[]
+  def getPeopleTable(self, qfe=True, qfg=True, slotted=False):
+
+    # First, let's gather the headlines
+    headlines = [u"Označit", u"Jméno", u"Příjmení", u"Nick", u"Telefon", u"Mail", u"Narození", u"Přihlášen"]
     headlines.extend(self.getQuestionNames(qfe, qfg))
+    slots = []
     if slotted and self.type == "multi":
       slots = MultiGameSlot.objects.filter(event=self)
       headlines.extend([ slot.getName() for slot in slots ])
 
+    # Now create the empty table
+    table = MightyTable(headlines)
+
+    # And fill it with data
     for player in self.getPlayers():
       reg   = Registration.objects.get(player=player, event=self)
-      record = []
-      record.append(player)
-      record.append(reg.created)
+
+      # Player info first
+      record = {}
+      record[u"Označit"]    = CheckerCell(player.id)
+      record[u"Jméno"]      = SimpleCell(player.getFirstName())
+      record[u"Příjmení"]   = SimpleCell(player.getSurname())
+      record[u"Nick"]       = SimpleCell(player.getNick())
+      record[u"Telefon"]    = SimpleCell(player.getPhone())
+      record[u"Mail"]       = SimpleCell(player.getMail())
+      record[u"Narození"]   = SimpleCell(player.getBirth())
+      record[u"Přihlášen"]  = SimpleCell(reg.created)
+
+      # Then questions for game
       if qfg and self.game:
-        row = []
         for question in [ que.question for que in self.game.questionforgame_set.all()]:
           answers = reg.answers.filter(question=question)
-          row.extend([ u",".join( [ ans.answer for ans in answers ]) ])
-        record.append(row)
-      else:
-        record.append(None)
+          record[question.getCaption()] = SimpleCell(u",".join( [ ans.answer for ans in answers ]))
+
+      # And questions for event
       if qfe:
-        row = []
         for question in [ que.question for que in self.question.all()]:
           answers = reg.answers.filter(question=question)
-          row.extend([ u",".join( [ ans.answer for ans in answers ]) ])
-        record.append(row)
-      else:
-        record.append(None)
+          record[question.getCaption()] = SimpleCell(u",".join( [ ans.answer for ans in answers ]))
 
+      # And if the game is slotted, then show applied slots
       if slots:
-        row = []
         for slot in slots:
           game = slot.getGameForPlayer(player)
           if game:
-            row.append(game.getGameName())
+            record[slot.getName()] = SimpleCell(game.getGameName())
           else:
-            row.append("--nic---")
-      else:
-        row = None
-      record.append(row)
-      players.append(record)
+            record[slot.getName()] = SimpleCell(u"--nic--")
 
-    if sorted == "surname":
-      players.sort(lambda x,y: cmp(x[0].surname.lower(), y[0].surname.lower()))
-    elif sorted == "created":
-      players.sort(lambda x,y: cmp(str(x[1]), str(y[1])))
+      table.addRecord(record)
 
-    return players, headlines
+    return table
 
   def getQuestionNames(self, qfg=True, qfe=True):
     headlines = []

@@ -19,6 +19,9 @@ class SimpleCell(Cell):
   def __str__(self):
     return self.asCode()
 
+  def asPlain(self):
+    return self.asCode()
+
 class URLCell(Cell):
   def __init__(self, url, label=None):
     if label is None:
@@ -38,6 +41,9 @@ class URLCell(Cell):
   def __str__(self):
     return self.asCode()
 
+  def asPlain(self):
+    return self.url
+
 class CheckerCell(Cell):
   def __init__(self, id, prefix="magic"):
     self.id = id
@@ -55,6 +61,9 @@ class CheckerCell(Cell):
   def __str__(self):
     return self.asCode()
 
+  def asPlain(self):
+    return unicode(self.id)
+
 class MightyTable:
   def __init__(self, headers):
     self.headers = headers
@@ -71,3 +80,15 @@ class MightyTable:
     self.records.sort(cmp=lambda x,y: locale.strcoll(unicode(x[index]), unicode(y[index])))
     if reverse:
       self.records.reverse()
+
+  def asCSV(self, quote=u'"', separator=u","):
+    headerline = separator.join([ '%s%s%s' % (quote, header, quote) for header in self.headers ])
+    rows = [headerline]
+    for row in self.records:
+      rowline = separator.join([ '%s%s%s' % (quote, item.asPlain(), quote) for item in row])
+      rows.append(rowline)
+
+    return "\n".join(rows)
+
+
+

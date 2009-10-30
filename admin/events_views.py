@@ -162,32 +162,21 @@ def add_game_to_slot(request, eventid="", slotid=""):
   else:
     return HttpResponseRedirect(u'/admin/events/multi/%s/slots/%s/' % (eventid, slotid))
 @my_admin_required
-def show_applied_people(request, eventid, slotted=False, cvsexport=False, sorted="surname"):
+def show_applied_people(request, eventid, slotted=False, cvsexport=False, sorted=None):
   event = Event.objects.get(id=eventid)
   records = []
-  records, headlines = event.getPeopleTable(qfe=True, qfg=True, slotted=slotted, sorted=sorted)
+  table = event.getPeopleTable(qfe=True, qfg=True, slotted=slotted)
+  if sorted:
+    table.sort(sorted)
 
   if cvsexport:
-    cells = [[u"Jméno", u"Příjmení", u"Přezdívka", u"Telefon", u"Mail", u"Rok narození" ] + headlines]
-    for record in records:
-      rec = [record[0].name, record[0].surname, record[0].nick, record[0].phone, record[0].getMail(), record[0].year_of_birth]
-      if record[1]:
-        rec += record[1]
-      if record[2]:
-        rec += record[2]
-      if record[3]:
-        rec += record[3]
-
-      cells.append(rec)
-
-    return HttpResponse("\n".join([",".join([ u'"%s"' % elm for elm in row]) for row in cells ]), mimetype="text/plain")
+    return HttpResponse(table.asCSV(), mimetype="text/plain")
 
   return render_to_response('admin/eventpeople.html',
                               {'menuitems'    : createMenuItems(),
                                'title'        : u"Lidé přihlášení na %s" % event.name,
                                'user'         : request.user,
-                               'records'      : records,
-                               'additional_headers'      : headlines,
+                               'table'        : table,
                                'event'        : event},
                               )
 

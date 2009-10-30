@@ -270,6 +270,12 @@ class Player(models.Model):
   def getID(self):
     return self.id
 
+  def getFirstName(self):
+    return self.name
+
+  def getSurname(self):
+    return self.surname
+
   def force_reset(self):
     email_template_name = 'password_reset_email.html'
     from django.core.mail import send_mail
