@@ -188,6 +188,7 @@ class Event(models.Model):
 
     # Now create the empty table
     table = MightyTable(headlines)
+    table.setNumeric(u"Narození")
 
     # And fill it with data
     for player in self.getPlayers():

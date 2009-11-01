@@ -161,6 +161,7 @@ def add_game_to_slot(request, eventid="", slotid=""):
       return HttpResponseRedirect(u'/admin/events/multi/%s/slots/%s/' % (eventid, slotid))
   else:
     return HttpResponseRedirect(u'/admin/events/multi/%s/slots/%s/' % (eventid, slotid))
+
 @my_admin_required
 def show_applied_people(request, eventid, slotted=False, cvsexport=False, sorted=None):
   event = Event.objects.get(id=eventid)
