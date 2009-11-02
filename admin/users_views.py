@@ -12,6 +12,8 @@ def list_users(request, sort):
     sort = "UID"
   headers = [u"Login", u"Jméno", u"Nick", u"Mail", u"Telefon", u"Narození", u"UID", u"Heslo"]
   table = MightyTable(headers)
+  table.setNumeric(u"Narození")
+  table.setNumeric(u"UID")
   for player in Player.objects.select_related():
     record = {}
     record[u"Login"]     = SimpleCell(player.getLogin())

@@ -22,6 +22,9 @@ class SimpleCell(Cell):
   def asPlain(self):
     return self.asCode()
 
+  def getValue(self):
+    return self.value
+
 class URLCell(Cell):
   def __init__(self, url, label=None):
     if label is None:
@@ -44,6 +47,9 @@ class URLCell(Cell):
   def asPlain(self):
     return self.url
 
+  def getValue(self):
+    return self.url
+
 class CheckerCell(Cell):
   def __init__(self, id, prefix="magic"):
     self.id = id
@@ -64,10 +70,23 @@ class CheckerCell(Cell):
   def asPlain(self):
     return unicode(self.id)
 
+  def getValue(self):
+    return self.id
+
 class MightyTable:
+  def sortAsStrings(self, index):
+    self.records.sort(cmp=lambda x,y: cmp(unicode(x[index].getValue()).lower(), unicode(y[index].getValue()).lower()))
+
+  def sortAsNumbers(self, index):
+    self.records.sort(cmp=lambda x,y: cmp(x[index].getValue(), y[index].getValue()))
+
+  def setNumeric(self, record):
+    self.numeric.append(record)
+
   def __init__(self, headers):
     self.headers = headers
     self.records = []
+    self.numeric = []
 
   def addRecord(self, new_record):
     record = []
@@ -77,7 +96,11 @@ class MightyTable:
 
   def sort(self, column, reverse=False):
     index = self.headers.index(column)
-    self.records.sort(cmp=lambda x,y: locale.strcoll(unicode(x[index]), unicode(y[index])))
+    if column in self.numeric:
+      self.sortAsNumbers(index)
+    else:
+      self.sortAsStrings(index)
+
     if reverse:
       self.records.reverse()
 
