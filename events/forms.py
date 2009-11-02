@@ -130,8 +130,16 @@ class RegistrationForm(DynamicForm):
 
 class ApplicationForm(DynamicForm):
   def save(self, eventid, user):
-    reg = Registration.objects.create(player = Player.objects.get(user=user),
-                                      event = Event.objects.get(id=eventid))
+    player = Player.objects.get(user=user)
+    event  = Event.objects.get(id=eventid)
+
+    try:
+      reg = Registration.objects.get(player = player, event = event)
+      event.unregister(player)
+    except Registration.DoesNotExist:
+      pass
+
+    reg = Registration.objects.create(player = player, event = event)
 
     for key in self.cleaned_data.keys():
       question = Question.objects.get(id=key)
