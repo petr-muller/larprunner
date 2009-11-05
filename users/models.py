@@ -277,7 +277,7 @@ class Player(models.Model):
     return self.surname
 
   def force_reset(self):
-    email_template_name = 'password_reset_email.html'
+    email_template_name = 'password_forceset_email.html'
     from django.core.mail import send_mail
     new_pass = User.objects.make_random_password()
     self.user.set_password(new_pass)
