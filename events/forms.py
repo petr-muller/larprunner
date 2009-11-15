@@ -177,7 +177,7 @@ class QuestionsForGamesForm(DynamicForm):
             ans[1] = [ans[1]]
           for data in ans[1]:
             registration.answers.create(question=question,
-                                        answer=ChoicesForQuestion.objects.get(id=data).choice))
+                                        answer=ChoicesForQuestion.objects.get(id=data).choice)
         else:
           registration.answers.create(question=question,
                                       answer = u'%s' % ans[1])
